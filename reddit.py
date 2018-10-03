@@ -1,5 +1,4 @@
 from pymongo import MongoClient
-#import json
 import getpass
 import praw
 import datetime
@@ -19,7 +18,23 @@ reddit = praw.Reddit(client_id='kMJUL_qNcpDOpA',
 
 
 def build(tree):
-    mapping = {'comment': tree.body}
+    mapping = {'comment': tree.body,
+               'created_utc': tree.created_utc,
+               'distinguished': tree.distinguished,
+               'edited': tree.edited,
+               'comment_id': tree.id,
+               'score': tree.score,
+               'stickied': tree.stickied,
+               }
+
+    try:
+        mapping['author_fullname'] = tree.author_fullname
+        mapping['author'] = tree.author.name
+    except:
+        #print("     Author of this comment has been deleted", file=errout)
+        mapping['author_fullname'] = '[deleted]'
+        mapping['author'] = '[deleted]'
+
     replies = []
     subforest = tree.replies
     subforest.replace_more(limit=None)
@@ -30,11 +45,84 @@ def build(tree):
     return mapping
 
 
+def updatetimestamps():
+    db.articles.update_many(
+        {}, {'$set': {'last_modified': datetime.datetime.utcnow()}})
+
+
+def scrape(submissions):
+    for submission in submissions:
+        try:
+            print("Doing: " + submission.title)
+            existingcopy = db.articles.find_one({'article_id': submission.id})
+            if existingcopy != None:
+                if existingcopy['archived']:
+                    print("     Skipping due to being archived in db")
+                    continue
+                if existingcopy['last_modified'] + datetime.timedelta(7) > datetime.datetime.utcnow():
+                    print("     Skipping due to last update being less than 7 days ago")
+                    continue
+                print("     Updating existing record")
+                db.articles.delete_one({'_id': existingcopy['_id']})
+
+            print("     Loading comments (this may take awhile) = " +
+                  str(submission.num_comments))
+            forest = submission.comments
+            print("     Populating forest", end='')
+            while True:
+                try:
+                    forest.replace_more(limit=50)
+                    print("")
+                    break
+                except PossibleExceptions:
+                    print(".", end='')
+                    usleep(500)
+            print("     Done, finalizing insertion")
+
+            allcomments = []
+            for tree in forest:
+                allcomments.append(build(tree))
+
+            final = {'title': submission.title,
+                     'subreddit':  submission.subreddit.display_name,
+                     'name': submission.name,
+                     'upvotes': submission.ups,
+                     'downvotes': submission.downs,
+                     'score': submission.score,
+                     'locked': submission.locked,
+                     'num_comments': submission.num_comments,
+                     'url': submission.url,
+                     'created_utc': submission.created_utc,
+                     'last_modified': datetime.datetime.utcnow(),
+                     'article_id': submission.id,
+                     'archived': submission.archived,
+                     }
+
+            try:
+                final['author_fullname'] = submission.author_fullname
+                final['author'] = submission.author.name
+            except:
+                print("     Author of this article has been deleted", file=errout)
+                final['author_fullname'] = '[deleted]'
+                final['author'] = '[deleted]'
+
+            final['comments'] = allcomments
+
+            db.articles.insert_one(final)
+            print("Done")
+        except Exception as e:
+            print("Error in \"" + submission.title + "\"")
+            print("Error in \"" + submission.title + "\"", file=errout)
+            print(e, file=errout)
+            errout.flush()
+            continue
+
+
 # main code
 command = ['notexit']
 subreddit = None
 while command[0] != "exit":
-    if subreddit == None:
+    if subreddit is None:
         print("> ", end='')
     else:
         print(subreddit.display_name + "> ", end='')
@@ -45,91 +133,23 @@ while command[0] != "exit":
             subreddit = reddit.subreddit(command[1])
         elif command[0] == 'scrape':  # scrape a specific article
             submission = reddit.submission(id=command[1])
-
-            print("Doing: " + submission.title)
-            forest = submission.comments
-            forest.replace_more(limit=None)
-
-            allcomments = []
-            for tree in forest:
-                allcomments.append(build(tree))
-
-                db.comments.insert_one({'title': submission.title,
-                                        'subreddit':  submission.subreddit.display_name,
-                                        'name': submission.name,
-                                        'upvotes': submission.ups,
-                                        'downvotes': submission.downs,
-                                        'author_fullname': submission.author_fullname,
-                                        'score': submission.score,
-                                        'locked': submission.locked,
-                                        'author': submission.author.name,
-                                        'num_comments': submission.num_comments,
-                                        'url': submission.url,
-                                        'created_utc': submission.created_utc,
-                                        'article_id': submission.id,
-                                        'archived': submission.archived,
-                                        'comments': allcomments})
-        elif command[0] == 'hot':  # scrapes a set amount of articles from hot
-            print("TOP OF /r/" + subreddit.display_name)
-            for submission in subreddit.top(limit=10):
-                print("> " + submission.title)
-        elif command[0] == 'auto':  # scrapes a set amount of articles from top
-            for submission in subreddit.top(limit=200):
-                try:
-                    print("Doing: " + submission.title)
-
-                    existingcopy = db.comments.find_one(
-                        {'article_id': submission.id})
-                    if existingcopy != None:
-                        if existingcopy['archived']:
-                            print(" Skipping due to being archived in db")
-                            continue
-                        print(" Updating existing record")
-                        db.comments.delete_one({'_id': existingcopy['_id']})
-
-                    print(" Loading comments (this may take awhile)")
-                    forest = submission.comments
-                    print(" Populating forest", end='')
-                    while True:
-                        try:
-                            forest.replace_more(limit=50)
-                            print("")
-                            break
-                        except PossibleExceptions:
-                            print(".", end='')
-                            usleep(500)
-                    print(" Done, finalizing insertion")
-
-                    allcomments = []
-                    for tree in forest:
-                        allcomments.append(build(tree))
-
-                    db.comments.insert_one({'title': submission.title,
-                                            'subreddit':  subreddit.display_name,
-                                            'name': submission.name,
-                                            'upvotes': submission.ups,
-                                            'downvotes': submission.downs,
-                                            'author_fullname': submission.author_fullname,
-                                            'score': submission.score,
-                                            'locked': submission.locked,
-                                            'author': submission.author.name,
-                                            'num_comments': submission.num_comments,
-                                            'url': submission.url,
-                                            'created_utc': submission.created_utc,
-                                            'article_id': submission.id,
-                                            'archived': submission.archived,
-                                            'comments': allcomments})
-                    print("Done")
-                except Exception as e:
-                    print("Error in " + submission.title)
-                    print("Error in " + submission.title, file=errout)
-                    print(e, file=errout)
-                    errout.flush()
-                    continue
-            print("AUTO COMPLETE AT", end='')
+            scrape([submission])
+        elif command[0] == 'hot':  # scrapes a set amount of articles from hot of current subreddit
+            starttime = datetime.datetime.utcnow()
+            scrape(subreddit.hot(limit=25))
+            print("Finished: ", end='')
             print(datetime.datetime.now())
+            print("Elapsed->", end='')
+            print(datetime.datetime.utcnow() - starttime)
+        elif command[0] == 'auto':  # scrapes a set amount of articles from top of current subreddit
+            starttime = datetime.datetime.utcnow()
+            scrape(subreddit.top(limit=500))
+            print("Finished: ", end='')
+            print(datetime.datetime.now())
+            print("Elapsed->", end='')
+            print(datetime.datetime.utcnow() - starttime)
         elif command[0] == 'touchall':  # dont use, updates all modified timestamps
-            print("Unimplemented function")
+            updatetimestamps()
         elif command[0] == 'forceupdate':  # updates all non archived rgardless of timestamp
             print("Unimplemented function")
         else:
