@@ -1,6 +1,6 @@
 package com.thesis.model;
 
-import java.util.ArrayList;
+import java.util.List;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -14,5 +14,5 @@ public class Comment{
     public boolean stickied;
     public String author_fullname;
     public String author;
-    public ArrayList<Comment> replies;
+    public List<Comment> replies;
 }
