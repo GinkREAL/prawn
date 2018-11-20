@@ -3,7 +3,7 @@ package com.thesis.controller;
 import com.thesis.model.User;
 import com.thesis.model.UserRepository;
 
-import java.util.Optional;
+import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
 
 @RestController
 public class UserController {
@@ -49,6 +50,9 @@ public class UserController {
 
     @RequestMapping(value="/api/session", method = RequestMethod.GET)
     public ResponseEntity<?> session(){
-        return new ResponseEntity<>(SecurityContextHolder.getContext().getAuthentication().getPrincipal(), HttpStatus.OK);
+        HashMap<String,String> response = new HashMap<String,String>();
+        response.put("username", (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }
