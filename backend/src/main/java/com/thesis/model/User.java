@@ -12,10 +12,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Document(value="users")
 public class User implements UserDetails{
     @Id
-    public String id;
-    public String username;
-    public String password;
-    public String role;
+    private String id;
+    private String username;
+    private String password;
+    private String role;
 
     public User(String username, String password, String role){
         this.username = username;
@@ -55,5 +55,9 @@ public class User implements UserDetails{
 
     public boolean isEnabled(){
         return true;
+    }
+
+    public void setPassword(String password){
+        this.password = password;
     }
 }

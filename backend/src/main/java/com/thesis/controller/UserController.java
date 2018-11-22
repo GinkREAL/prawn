@@ -23,7 +23,7 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @RequestMapping(value="/api/signup", method = RequestMethod.POST)
+    @RequestMapping(value="/api/user", method = RequestMethod.POST)
     public HttpStatus signup(String username, String password) {
 
 
@@ -48,11 +48,25 @@ public class UserController {
         }
     }
 
-    @RequestMapping(value="/api/session", method = RequestMethod.GET)
+    @RequestMapping(value="/api/user", method = RequestMethod.GET)
     public ResponseEntity<?> session(){
         HashMap<String,String> response = new HashMap<String,String>();
         response.put("username", (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @RequestMapping(value="/api/user", method = RequestMethod.PUT) //changing username not allowed yet
+    public HttpStatus changePassword(String oldPassword, String newPassword){
+        String requester = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userRepository.findByUsername(requester);
+        
+        if(passwordEncoder.matches(oldPassword, user.getPassword())){
+            user.setPassword(passwordEncoder.encode(newPassword));
+            userRepository.save(user);
+            return HttpStatus.OK;
+        } else {
+            return HttpStatus.UNAUTHORIZED;
+        }
     }
 }

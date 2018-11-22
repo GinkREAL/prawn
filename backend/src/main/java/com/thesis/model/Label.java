@@ -10,11 +10,11 @@ import java.util.List;
 @Document(value="labels")
 public class Label{
     @Id
-    public String id;
-    public String labeller;
-    public String article_id;
-    public String comment_address;
-    public String label;
+    private String id;
+    private String labeller;
+    private String article_id;
+    private String comment_address;
+    private String label;
 
     public Label(String labeller, String article_id, String comment_address, String label){
         this.labeller = labeller;

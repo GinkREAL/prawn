@@ -40,6 +40,6 @@ public class ArticleController { //read only
         SampleOperation random = Aggregation.sample(1);
         Aggregation aggregation = Aggregation.newAggregation(random);
         AggregationResults<Article> output = mongoTemplate.aggregate(aggregation, "articles", Article.class);
-        return new ResponseEntity<>(output.getMappedResults().get(0).id, HttpStatus.OK);
+        return new ResponseEntity<>(output.getMappedResults().get(0).getId(), HttpStatus.OK);
     }
 }

@@ -17,7 +17,6 @@ public class MongoUserDetailsService implements UserDetailsService{
     //username: admin, password: $2a$10$p2Di4mLn5ftKAnnpT9gfDuh6jbCIXGHll5Aw2O3sNaV6486mYcwlO
 
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException{
-        System.out.println(userRepository == null);
         User user = userRepository.findByUsername(username);
         if(user == null){
             throw new UsernameNotFoundException("Username not found");
