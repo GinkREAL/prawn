@@ -27,7 +27,7 @@ public class ArticleController { //read only
     @Autowired
     private MongoTemplate mongoTemplate;
 
-	@RequestMapping(value = "api/random", method = RequestMethod.GET)
+	@RequestMapping(value = "api/randomarticle", method = RequestMethod.GET)
 	public ResponseEntity<?> fullrandom() {
         SampleOperation random = Aggregation.sample(1);
         Aggregation aggregation = Aggregation.newAggregation(random);
@@ -35,7 +35,7 @@ public class ArticleController { //read only
 		return new ResponseEntity<>(output.getMappedResults().get(0), HttpStatus.OK);
 	}
 
-    @RequestMapping(value = "api/randomid", method = RequestMethod.GET)
+    @RequestMapping(value = "api/randomarticleid", method = RequestMethod.GET)
     public ResponseEntity<?> random() {
         SampleOperation random = Aggregation.sample(1);
         Aggregation aggregation = Aggregation.newAggregation(random);

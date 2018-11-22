@@ -1,0 +1,62 @@
+User REST API:
+
+	[POST] /api/login: Returns bearer token which is necessary for all other requests.
+	Parameters:
+		> username: the username
+		> password: the password
+	Returns:
+		> 403 FORBIDDEN if credentials are wrong
+		> 200 OK with token if credentials are ok
+
+	[POST] /api/user: Signs up a new user. Admin only endpoint
+	Parameters:
+		> username: new user's username, must be nonexisting
+		> password: new user's password
+	Returns:
+		> 201 CREATED if user was successfully created
+		> 400 BAD REQUEST if user already exists
+		> 403 FORBIDDEN if user does not have admin role
+
+	[GET] /api/user: Get current logged in user's name.
+	Headers: NONE
+	Returns:
+		> 200 and username of current user
+
+	[PUT] /api/user: Changes password of current user.
+	Parameters:
+		> oldPassword: current user's old password
+		> newPassword: new desired password
+	Returns:
+		> 401 UNAUTHORIZED if incorrect old password
+		> 200 OK if change successful
+
+Article REST API:
+	
+	[GET] /api/randomarticle: Gets a full random article from database.
+	Headers: NONE
+	Returns:
+		> 200 and a full article
+
+	[GET] /api/randomarticleid: Same as before but id only.
+	Headers: NONE
+	Returns:
+		> 200 and random article id
+
+Label REST API:
+
+	[GET] /api/comment: Gets a comment given comment address and article id. Article id refers to mongo id not reddit id.
+	Headers:
+		> article_id : mongo article id
+		> comment_address: comment indice address
+	Returns:
+		> 404 NOT FOUND if comment cannot be found
+		> 200 OK and the comment if found
+
+	[POST] /api/label: Label a particular comment
+	Parameters:
+		> article_id: mongo article id
+		> comment_address: comment indice address
+		> label: the desired label
+	Returns:
+		> 201 CREATED if label successful
+		> 404 NOT FOUND if comment cannot be found
