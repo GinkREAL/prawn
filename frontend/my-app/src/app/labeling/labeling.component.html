@@ -1,8 +1,23 @@
-<form>
-	<div class="form-group">
-		<label for="comment">Comment</label>
-		<textarea class="form-control" id="comment" rows="3" readonly></textarea>
+<div class="row">
+	<div class="col-sm-6">
+		<h3>Instructions:</h3>
+
 	</div>
-	<button type="button" class="btn btn-outline-success">In Favor</button>
-	<button type="button" class="btn btn-outline-warning">Against</button>
-</form>
+
+	<div class="col-sm-6">
+		<form>
+			<div class="form-group">
+				<label for="title">Reddit Article</label>
+				<input class="form-control" id="title" readonly></textarea>
+			</div>
+			<div class="form-group">
+				<label for="comment">Comment</label>
+				<textarea class="form-control" id="comment" rows="3" readonly></textarea>
+			</div>
+			<button type="button" class="btn btn-success btn-block" value="favor">In Favor (F)</button>
+			<button type="button" class="btn btn-warning btn-block" value="against">Against (A)</button>
+			<button type="button" class="btn btn-secondary btn-block" value="none">None (N)</button>
+		</form>
+	</div>
+</div>
+
