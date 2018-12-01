@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Login } from '../login';
+import { AuthService } from '../services/auth.service.js';
 
 @Component({
   selector: 'app-login',
@@ -13,9 +14,13 @@ export class LoginComponent implements OnInit {
     name: 'login'
   }
 
-  constructor() { }
+  constructor(private authService: AuthService) { }
 
   ngOnInit() {
+    console.log(this.authService.getToken("admin","superpassword"));
+    this.authService.getSession().subscribe(object =>{
+      alert(object);
+    })
   }
 
 }

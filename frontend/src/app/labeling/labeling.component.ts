@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Labeling } from '../labeling';
+import { ArticleService } from '../services/article.service.js';
 
 @Component({
   selector: 'app-labeling',
@@ -13,7 +14,7 @@ export class LabelingComponent implements OnInit {
     name: 'labeling'
   };
 
-  constructor() { }
+  constructor(private articleService: ArticleService) { }
 
   ngOnInit() {
   }
