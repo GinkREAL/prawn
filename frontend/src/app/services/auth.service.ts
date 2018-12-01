@@ -25,4 +25,14 @@ export class AuthService {
   getSession() {
     return this.http.get(this.sessionUrl)
   }
+
+  signup(username, password){
+    let body = {
+      "username": username,
+      "password": password
+    }
+    return this.http.post(this.loginUrl, body)
+  }
+
+
 }
