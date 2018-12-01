@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 export class ArticleService {
 
   articleUrl = "/api/randomarticle";
+  articleIdUrl = "/api/randomarticleid"
 
   constructor(
     private http: HttpClient
@@ -16,4 +17,7 @@ export class ArticleService {
     return this.http.get(this.articleUrl);
   }
 
+  getRandomArticleId() {
+    return this.http.get(this.articleIdUrl);
+  }
 }
