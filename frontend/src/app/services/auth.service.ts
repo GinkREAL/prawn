@@ -4,6 +4,10 @@ import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
 })
+
+class TokenResponse {
+  token: string;
+}
 export class AuthService {
 
   loginUrl = "/api/login";
@@ -17,7 +21,7 @@ export class AuthService {
     const formData = new FormData();
     formData.append('username','admin');
     formData.append('password','superpassword');
-    this.http.post(this.loginUrl,formData).subscribe(object => {
+    this.http.post(this.loginUrl,formData).subscribe((object: TokenResponse) => {
         window.localStorage.setItem('token', object.token);
     })
   }
