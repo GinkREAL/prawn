@@ -9,7 +9,7 @@ import { Labeling } from '../labeling';
 export class LabelingComponent implements OnInit {
 
 	labeling: Labeling = {
-  	id: 1,
+  	id: 2,
     name: 'labeling'
   };
 
