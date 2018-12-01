@@ -15,11 +15,13 @@ public class Label{
     private String article_id;
     private String comment_address;
     private String label;
+    private String target;
 
     public Label(String labeller, String article_id, String comment_address, String label){
         this.labeller = labeller;
         this.article_id = article_id;
         this.comment_address = comment_address;
         this.label = label;
+        this.target = target;
     }
 }

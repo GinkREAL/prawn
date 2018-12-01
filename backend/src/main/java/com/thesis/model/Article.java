@@ -13,6 +13,7 @@ public class Article{
     private String id;
     private String subreddit;
     private String name;
+    private String title;
     private int upvotes;
     private int downvotes;
     private int score;
@@ -36,6 +37,10 @@ public class Article{
 
     public String getName(){
         return name;
+    }
+
+    public String getTitle(){
+        return title;
     }
 
     public int getUpvotes(){

@@ -38,13 +38,13 @@ public class LabelController {
     }
 
     @RequestMapping(value = "api/label", method = RequestMethod.POST)
-    public HttpStatus label(String article_id, String comment_address, String label){
+    public HttpStatus label(String article_id, String comment_address, String label, String target){
         Comment comment = getComment(article_id, comment_address);
         if(comment == null){
             return HttpStatus.NOT_FOUND;
         } else {
             String labeller = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            Label newlabel = new Label(labeller, article_id, comment_address, label);
+            Label newlabel = new Label(labeller, article_id, comment_address, label, target);
             labelRepository.save(newlabel);
             return HttpStatus.CREATED;
         }
