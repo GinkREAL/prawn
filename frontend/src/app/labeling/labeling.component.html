@@ -13,16 +13,29 @@
 	<div class="col-sm-6">
 		<form>
 			<div class="form-group">
-				<label for="title">Reddit Article</label>
-				<input class="form-control" id="title" readonly>
+				<label for="target">Reddit Article (Target)</label>
+				<input class="form-control" id="target" readonly>
 			</div>
 			<div class="form-group">
 				<label for="comment">Comment</label>
 				<textarea class="form-control" id="comment" rows="3" readonly></textarea>
 			</div>
-			<button type="button" class="btn btn-success btn-block" value="favor">In Favor (F)</button>
-			<button type="button" class="btn btn-warning btn-block" value="against">Against (A)</button>
-			<button type="button" class="btn btn-secondary btn-block" value="none">None (N)</button>
+			<div class="row">
+				<div class="col-sm-7">
+					<button type="button" class="btn btn-success btn-block" value="favor">In Favor (F)</button>
+					<button type="button" class="btn btn-warning btn-block" value="against">Against (A)</button>
+					<button type="button" class="btn btn-secondary btn-block" value="none">None (N)</button>
+				</div>
+				<div class="col-sm-5">
+					<div class="card">
+					  <div class="card-body text-center">
+					  	<!-- get count of labeled comments -->
+					  	<h3>{{ count }}</h3>
+					  	<p>comments labeled</p>
+					  </div>
+					</div>
+				</div>
+			</div>
 		</form>
 	</div>
 </div>
