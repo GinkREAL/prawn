@@ -1,19 +1,27 @@
 import { Injectable } from '@angular/core';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpHeaders, HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class InterceptorService implements HttpInterceptor {
 
-  constructor() { }
+  constructor(
+    private http: HttpClient,
+    private router: Router
+  ) { }
 
-  intercept(req: HttpRequest<any>,next: HttpHandler): Observable<HttpEvent<any>>{
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>{
     var currentHeaders: HttpHeaders = req.headers;
     currentHeaders = currentHeaders.append('Authorization', 'Bearer ' + window.localStorage.getItem('token'));
-    console.log(window.localStorage.getItem('token'));
-    console.log(currentHeaders);
-    return next.handle(req.clone({headers: currentHeaders}));
+    var formedRequest = req.clone({headers: currentHeaders});
+    return next.handle(formedRequest).pipe(catchError((error: HttpErrorResponse): Observable<any> => {
+      console.log(error.status)
+      this.router.navigate('/login')
+      return Observable.throw(error)
+      }))
   }
 }
