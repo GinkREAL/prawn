@@ -14,13 +14,23 @@ export class LoginComponent implements OnInit {
     name: 'login'
   }
 
-  constructor(private authService: AuthService) { }
-
-  ngOnInit() {
-    console.log(this.authService.getToken("admin","superpassword"));
-    this.authService.getSession().subscribe(object =>{
-      alert(object);
-    })
+  login(credentials) {
+    this.authService.getToken(this.credentials.username, this.credentials.password).subscribe()
   }
+
+  constructor(private authService: AuthService) {
+    var ctrl = this
+    var credentials = {
+      username: '',
+      password: ''
+    }
+
+  }
+
+  
+  ngOnInit() {
+  }
+
+  
 
 }

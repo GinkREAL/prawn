@@ -11,15 +11,14 @@
 		<form>
 		  <div class="form-group">
 		      <label for="username">Username</label>
-		      <input type="text" class="form-control" id="username" placeholder="Enter your username">
+		      <input type="text" class="form-control" id="username" ngModel="credentials.username" placeholder="Enter your username">
 		  </div>
 		  <div class="form-group">
 		      <label for="password">Password</label>
-		      <input type="password" class="form-control" id="password" placeholder="Enter your password">
+		      <input type="password" class="form-control" id="password" ngModel="credentials.username" placeholder="Enter your password">
 		  </div>
-		  <!-- routerLink is temporary -->
-		  <button type="submit" class="btn btn-primary" routerLink="/labeling">Log in</button>
 		</form>
+		<button class="btn btn-primary" (click)="login(credentials)">Log in</button>
 	</div>
 </div>
 

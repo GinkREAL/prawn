@@ -19,8 +19,8 @@ export class AuthService {
 
   getToken(username, password) {
     const formData = new FormData();
-    formData.append('username','admin');
-    formData.append('password','superpassword');
+    formData.append('username',username);
+    formData.append('password',password);
     this.http.post(this.loginUrl,formData).subscribe((object: TokenResponse) => {
         window.localStorage.setItem('token', object.token);
     })

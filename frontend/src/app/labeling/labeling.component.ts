@@ -21,18 +21,18 @@ export class LabelingComponent implements OnInit {
 
   constructor(private articleService: ArticleService, private labelService: LabelService) { }
 
-  loopComments(arr, id, label) {
-    var i = 0
-    let comment_address = i.toString()
+  loopComments = function(arr, id, label) {
+    let comment_address = this.i.toString()
     if (arr[i]['comment'] != "[deleted]" || arr[i]['comment'] != "[removed]") {
       this['comment'] = arr[i]['comment']
+      console.log(arr[i]['comment'])
       this.labelService.postLabel(id, comment_address, label).subscribe()
     }
     
-    i++
+    this.i++
 
     if(i < arr.length) {
-      loopComments(arr, id, label)
+      this.loopComments(arr, id, label)
     }
   }
 
@@ -48,6 +48,7 @@ export class LabelingComponent implements OnInit {
 
       console.log(this['label'])
 
+      var i = 0
       this.loopComments(object['comments'], object['id'], this['label'])
 
       // for (let i=0; i < object['comments'].length; i++) {
