@@ -14,23 +14,17 @@ export class LoginComponent implements OnInit {
     name: 'login'
   }
 
-  login(credentials) {
-    this.authService.getToken(this.credentials.username, this.credentials.password).subscribe()
-  }
-
   constructor(private authService: AuthService) {
-    var ctrl = this
-    var credentials = {
+    this.credentials = {
       username: '',
       password: ''
     }
-
   }
 
+  loginFunc(creds) {
+    this.authService.getToken(creds.username, creds.password)
+  }
   
   ngOnInit() {
   }
-
-  
-
 }
