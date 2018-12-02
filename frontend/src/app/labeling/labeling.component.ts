@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Labeling } from '../labeling';
-import { ArticleService } from '../services/article.service.ts';
-import { LabelService } from '../services/label.service.ts';
+import { Article } from '../models/article'
+import { ArticleService } from '../services/article.service';
+import { LabelService } from '../services/label.service';
 
 @Component({
   selector: 'app-labeling',
@@ -18,16 +19,13 @@ export class LabelingComponent implements OnInit {
   constructor(private articleService: ArticleService, private labelService: LabelService) { }
 
   ngOnInit() {
-    this.articleService.getRandomArticle().subscribe(object =>{
+    this.articleService.getRandomArticle().subscribe((object: Article) =>{
       this.id = object.id
       this.title = object.title
 
       for (let i=0; i < object.comments.length; i++) {
         let comment_address = i.toString()
-        this.labelService.getComment(this.id, comment_address).subscribe(object =>{
-          console.log(object)
-          this.comment = object.comment
-        })
+        console.log(object.comments[i]);
       }
       
     })
