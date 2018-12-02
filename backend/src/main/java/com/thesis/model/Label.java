@@ -17,7 +17,7 @@ public class Label{
     private String label;
     private String target;
 
-    public Label(String labeller, String article_id, String comment_address, String label){
+    public Label(String labeller, String article_id, String comment_address, String label, String target){
         this.labeller = labeller;
         this.article_id = article_id;
         this.comment_address = comment_address;
