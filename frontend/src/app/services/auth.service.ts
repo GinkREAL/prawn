@@ -38,10 +38,11 @@ export class AuthService {
   }
 
   signup(username, password){
+    console.log("asdfawefaewfwefw")
     let body = new FormData();
     body.append("username", username)
     body.append("password", password)
-    return this.http.post(this.loginUrl, body)
+    return this.http.post(this.sessionUrl, body)
   }
 
 
