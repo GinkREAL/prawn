@@ -1,3 +1,4 @@
 # ignore database
 reddatabase
 node_modules/
+.DS_Store
