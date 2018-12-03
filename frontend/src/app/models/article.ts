@@ -15,4 +15,6 @@ export class Article {
     author_fullname: string;
     author: string;
     comments: Comment[];
+    valid: boolean;
+    targets: string[];
 }

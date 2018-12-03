@@ -18,7 +18,7 @@
 		      <input type="password" class="form-control" id="password" [(ngModel)]="credentials.password" name="password" placeholder="Enter your password">
 		  </div>
 		</form>
-		<button class="btn btn-primary" (click)="loginFunc(credentials)">Log in</button>
+		<button class="btn btn-primary" (click)="loginFunc(credentials)" routerLink="/labeling">Log in</button>
 		&nbsp;&nbsp;<a routerLink="/signup">Be part of our labeling team. Sign up now!</a>
 	</div>
 </div>

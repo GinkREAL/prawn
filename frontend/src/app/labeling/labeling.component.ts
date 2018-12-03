@@ -24,22 +24,30 @@ export class LabelingComponent implements OnInit {
   }
 
   nextComment(obj) {
-    if (obj['comments'][this.buttonClicks]['comment'] != "[deleted]" || obj['comments'][this.buttonClicks]['comment'] != "[removed]") {
-      this['comment'] = obj['comments'][this.buttonClicks]['comment']
-      this.buttonClicks += 1
+    if (obj['comments'][this.commentAddress]['comment'] != "[deleted]" || obj['comments'][this.commentAddress]['comment'] != "[removed]") {
+      this['comment'] = obj['comments'][this.commentAddress]['comment']
     }
+  }
+
+  nextTarget(obj) {
+    this['target'] = obj['targets'][this.targetCount]
   }
 
   getLabel(labelValue) {
     this.labelValue = labelValue
-    console.log(this.labelValue)
-    console.log(this['id'])
-    console.log(this.buttonClicks.toString())
-    this.labelService.postLabel(this['id'], this.buttonClicks.toString(), this.labelValue, 'sample target').subscribe()
-    this.count += 1
-    this.nextComment(this['object'])
+    this.labelService.postLabel(this['id'], this.commentAddress.toString(), this.labelValue, this['target']).subscribe()
+    if (this.targetCount < this['object']['targets'].length) {
+      this.targetCount += 1
+      this.nextTarget(this['object'])  
+    }
+    if (this.targetCount == this['object']['targets'].length) {
+      this.commentAddress += 1
+      this.nextComment(this['object'])
+      this.targetCount = 0
+      this.nextTarget(this['object'])
+      this.count += 1
+    }
   }
-
 
   ngOnInit() {
     this.username = window.localStorage.getItem('username');
@@ -48,12 +56,16 @@ export class LabelingComponent implements OnInit {
       this['object'] = object
       this['id'] = object['id']
       this['title'] = object['title']
+      this['url'] = object['url']
 
-      this.buttonClicks = 0
+      this.targetCount = 0
+      this['target'] = object['targets'][this.targetCount]
+
+      this.commentAddress = 0
       this.count = 0
-      if (object['comments'][this.buttonClicks]['comment'] != "[deleted]" || object['comments'][this.buttonClicks]['comment'] != "[removed]") {
-        this['comment'] = object['comments'][this.buttonClicks]['comment']
-        this.buttonClicks += 1
+      
+      if (object['comments'][this.commentAddress]['comment'] != "[deleted]" || object['comments'][this.commentAddress]['comment'] != "[removed]") {
+        this['comment'] = object['comments'][this.commentAddress]['comment']
       }    
     })
   }

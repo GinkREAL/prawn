@@ -2,6 +2,7 @@
 	<div class="col-sm-6">
 		<h3>Hi, <b>{{ username }}</b>!</h3>
 		<h3>Please follow these instructions:</h3>
+		<p>There will be <b>one or more targets</b> per article. Please label the comments according to the target shown.</p>
 		<ul style="list-style-type:square">
 		  <li>Click the <b>'In Favor'</b> button or press <b>'F'</b> on your keyboard if you can infer from the comment that the commenter <b>supports or has a positive stance</b> towards the target.</li>
 		  <br>
@@ -15,14 +16,18 @@
 		<form>
 			<div class="form-group">
 				<label for="title">Reddit Article:</label>
-				<p><b>{{ title }}</b></p>
+				<p>
+					<b>{{ title }}</b>
+					<br>
+					<i>Link: <a href="{{ url }}">{{ url }}</a></i>
+				</p>
 			</div>
 			<div class="form-group">
-				<label for="target">Target:</label>
-				<h4><b>{{ target }}</b></h4>
+				<label for="target">Target {{ targetCount + 1 }}:</label>
+				<h1><b>{{ target }}</b></h1>
 			</div>
 			<div class="form-group">
-				<label for="comment">Comment</label>
+				<label for="comment">Comment:</label>
 				<textarea class="form-control" id="comment" rows="5" readonly>{{ comment }}</textarea>
 			</div>
 			<div class="row">
@@ -36,7 +41,7 @@
 					  <div class="card-body text-center">
 					  	<!-- get count of labeled comments -->
 					  	<h3>{{ count }}</h3>
-					  	<p>comments labeled</p>
+					  	<p>comments labeled in total</p>
 					  </div>
 					</div>
 				</div>
