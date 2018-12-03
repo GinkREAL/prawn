@@ -26,6 +26,8 @@ public class Article{
     private String author_fullname;
     private String author;
     private List<Comment> comments;
+    private boolean valid;
+    private String[] targets;
 
     public String getId(){
         return id;
@@ -85,5 +87,13 @@ public class Article{
 
     public List<Comment> getComments(){
         return comments;
+    }
+
+    public boolean isValid(){
+        return valid;
+    }
+
+    public String[] getTargets(){
+        return targets;
     }
 }

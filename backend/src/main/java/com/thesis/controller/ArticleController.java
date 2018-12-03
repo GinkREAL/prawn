@@ -14,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.SampleOperation;
+import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 
@@ -27,10 +29,13 @@ public class ArticleController { //read only
     @Autowired
     private MongoTemplate mongoTemplate;
 
+    //db.articles.update({"_id":ObjectId('5badfc4f62b80e155641dcee')},{$set:{"valid":true, "targets":["Donald Trump", "man", "Taliban"]}})
+
 	@RequestMapping(value = "api/randomarticle", method = RequestMethod.GET)
 	public ResponseEntity<?> fullrandom() {
         SampleOperation random = Aggregation.sample(1);
-        Aggregation aggregation = Aggregation.newAggregation(random);
+        MatchOperation valid = Aggregation.match(Criteria.where("valid").is(true));
+        Aggregation aggregation = Aggregation.newAggregation(valid, random);
         AggregationResults<Article> output = mongoTemplate.aggregate(aggregation, "articles", Article.class);
 		return new ResponseEntity<>(output.getMappedResults().get(0), HttpStatus.OK);
 	}
@@ -38,8 +43,9 @@ public class ArticleController { //read only
     @RequestMapping(value = "api/randomarticleid", method = RequestMethod.GET)
     public ResponseEntity<?> random() {
         SampleOperation random = Aggregation.sample(1);
-        Aggregation aggregation = Aggregation.newAggregation(random);
+        MatchOperation valid = Aggregation.match(Criteria.where("valid").is(true));
+        Aggregation aggregation = Aggregation.newAggregation(valid, random);
         AggregationResults<Article> output = mongoTemplate.aggregate(aggregation, "articles", Article.class);
-        return new ResponseEntity<>(output.getMappedResults().get(0).getId(), HttpStatus.OK);
+		return new ResponseEntity<>(output.getMappedResults().get(0).getId(), HttpStatus.OK);
     }
 }
