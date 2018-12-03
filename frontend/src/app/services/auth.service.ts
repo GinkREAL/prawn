@@ -5,6 +5,10 @@ import { HttpClient, HttpHeaders, HttpResponse } from '@angular/common/http';
 class TokenResponse {
   token: string;
 }
+class SessionResponse {
+  username: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -23,6 +27,9 @@ export class AuthService {
     body.append('password',password);
     this.http.post(this.loginUrl,body).subscribe((object: TokenResponse) => {
         window.localStorage.setItem('token', object.token);
+    })
+    let username = this.getSession().subscribe((object: SessionResponse) => {
+      window.localStorage.setItem('username', object.username);
     })
   }
 

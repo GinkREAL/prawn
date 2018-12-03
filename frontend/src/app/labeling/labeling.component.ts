@@ -19,48 +19,42 @@ export class LabelingComponent implements OnInit {
 
   labelControl = new FormControl('');
 
-  constructor(private articleService: ArticleService, private labelService: LabelService) { }
+  constructor(private articleService: ArticleService, private labelService: LabelService) {
+    this.labelValue = ''
+  }
 
-  loopComments = function(arr, id, label) {
-    let comment_address = this.i.toString()
-    if (arr[i]['comment'] != "[deleted]" || arr[i]['comment'] != "[removed]") {
-      this['comment'] = arr[i]['comment']
-      console.log(arr[i]['comment'])
-      this.labelService.postLabel(id, comment_address, label).subscribe()
-    }
-    
-    this.i++
-
-    if(i < arr.length) {
-      this.loopComments(arr, id, label)
+  nextComment(obj) {
+    if (obj['comments'][this.buttonClicks]['comment'] != "[deleted]" || obj['comments'][this.buttonClicks]['comment'] != "[removed]") {
+      this['comment'] = obj['comments'][this.buttonClicks]['comment']
+      this.buttonClicks += 1
     }
   }
 
-  getLabel(label) {
-    this['label'].setValue(label);
+  getLabel(labelValue) {
+    this.labelValue = labelValue
+    console.log(this.labelValue)
+    console.log(this['id'])
+    console.log(this.buttonClicks.toString())
+    this.labelService.postLabel(this['id'], this.buttonClicks.toString(), this.labelValue, 'sample target').subscribe()
+    this.count += 1
+    this.nextComment(this['object'])
   }
 
 
   ngOnInit() {
+    this.username = window.localStorage.getItem('username');
+
     this.articleService.getRandomArticle().subscribe((object: Article) =>{
+      this['object'] = object
       this['id'] = object['id']
       this['title'] = object['title']
 
-      console.log(this['label'])
-
-      var i = 0
-      this.loopComments(object['comments'], object['id'], this['label'])
-
-      // for (let i=0; i < object['comments'].length; i++) {
-      //   let comment_address = i.toString()
-      //   // console.log(object['comments'][i]);
-      //   if (object['comments'][i] != "[deleted]" || object['comments'][i] != "[removed]") {
-      //     this['comment'] = object['comments'][i]['comment']
-      //     let label = this['label']
-      //     this.labelService.postLabel(object['id'], comment_address, label).subscribe()
-      //   }
-      // }
-      
+      this.buttonClicks = 0
+      this.count = 0
+      if (object['comments'][this.buttonClicks]['comment'] != "[deleted]" || object['comments'][this.buttonClicks]['comment'] != "[removed]") {
+        this['comment'] = object['comments'][this.buttonClicks]['comment']
+        this.buttonClicks += 1
+      }    
     })
   }
 

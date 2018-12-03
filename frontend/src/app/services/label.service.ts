@@ -21,11 +21,12 @@ export class LabelService {
     return this.http.get(this.commentUrl, {headers: headerz})
   }
 
-  postLabel(article_id, comment_address, label){
+  postLabel(article_id, comment_address, label, target){
     let body = new FormData();
-    body.append("article_id", article_id);
+    body.append("article_id", article_id)
     body.append("comment_address", comment_address)
     body.append("label", label)
+    body.append("target", target)
     return this.http.post(this.labelUrl, body);
   }
 
