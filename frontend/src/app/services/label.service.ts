@@ -22,11 +22,10 @@ export class LabelService {
   }
 
   postLabel(article_id, comment_address, label){
-    let body = {
-      "article_id": article_id,
-      "comment_address": comment_address,
-      "label": label
-    }
+    let body = new FormData();
+    body.append("article_id", article_id);
+    body.append("comment_address", comment_address)
+    body.append("label", label)
     return this.http.post(this.labelUrl, body);
   }
 

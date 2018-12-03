@@ -18,10 +18,10 @@ export class AuthService {
   ) { }
 
   getToken(username, password) {
-    const formData = new FormData();
-    formData.append('username',username);
-    formData.append('password',password);
-    this.http.post(this.loginUrl,formData).subscribe((object: TokenResponse) => {
+    let body = new FormData();
+    body.append('username',username);
+    body.append('password',password);
+    this.http.post(this.loginUrl,body).subscribe((object: TokenResponse) => {
         window.localStorage.setItem('token', object.token);
     })
   }
@@ -31,10 +31,9 @@ export class AuthService {
   }
 
   signup(username, password){
-    let body = {
-      "username": username,
-      "password": password
-    }
+    let body = new FormData();
+    body.append("username", username)
+    body.append("password", password)
     return this.http.post(this.loginUrl, body)
   }
 
