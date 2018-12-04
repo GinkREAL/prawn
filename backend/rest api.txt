@@ -32,7 +32,8 @@ User REST API:
 
 Article REST API:
 	
-	[GET] /api/randomarticle: Gets a full random article from database.
+	[GET] /api/randomarticle: Gets a full random article from database that is manually marked as 'valid'.
+		It follows that this would also have targets already
 	Headers: NONE
 	Returns:
 		> 200 and a full article
@@ -44,6 +45,11 @@ Article REST API:
 
 Label REST API:
 
+	[GET] /api/mylabels: Get all the labels of the currently logged in user.
+	Headers: NONE
+	Returns:
+		> 200 and a list of all labels, may be empty if there are none
+
 	[GET] /api/comment: Gets a comment given comment address and article id. Article id refers to mongo id not reddit id.
 	Headers:
 		> article_id : mongo article id
@@ -51,6 +57,14 @@ Label REST API:
 	Returns:
 		> 404 NOT FOUND if comment cannot be found
 		> 200 OK and the comment if found
+
+	[GET] /api/label: Get a particular label
+	Headers:
+		> article_id: mongo article id
+		> comment_address: comment indice address
+	Returns:
+		> 200 OK and the label if found
+		> 404 NOT FOUND if label cannot be found
 
 	[POST] /api/label: Label a particular comment
 	Parameters:

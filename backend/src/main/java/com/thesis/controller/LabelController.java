@@ -6,6 +6,7 @@ import com.thesis.model.Comment;
 import com.thesis.model.ArticleRepository;
 import com.thesis.model.LabelRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+
 
 @RestController
 public class LabelController {
@@ -25,6 +30,8 @@ public class LabelController {
     private ArticleRepository articleRepository;
     @Autowired
     private LabelRepository labelRepository;
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     @RequestMapping(value = "api/comment", method = RequestMethod.GET)
     public ResponseEntity<?> verify(@RequestHeader(name = "article_id", required=true) String article_id, 
@@ -42,12 +49,31 @@ public class LabelController {
         Comment comment = getComment(article_id, comment_address);
         if(comment == null){
             return HttpStatus.NOT_FOUND;
+
+
+        String labeller = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Label newlabel = new Label(labeller, article_id, comment_address, label, target);
+        labelRepository.save(newlabel);
+        return HttpStatus.CREATED;
+    }
+
+    @RequestMapping(value = "api/label", method = RequestMethod.GET)
+    public ResponseEntity<?> getLabel(@RequestHeader(name = "article_id", required=true) String article_id, 
+                                    @RequestHeader(name = "comment_address", required=true) String comment_address){
+
+        Label label = getLabelComposite(article_id, comment_address)
+        if(label != null)
+            return new ResponseEntity<>(label, HttpStatus.OK);
         } else {
-            String labeller = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-            Label newlabel = new Label(labeller, article_id, comment_address, label, target);
-            labelRepository.save(newlabel);
-            return HttpStatus.CREATED;
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @RequestMapping(value = "api/mylabels", method = RequestMethod.GET)
+    public ResponseEntity<?> getMyLabels(){
+        String user = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<Label> labels = labelRepository.findByLabeller(user);
+        return new ResponseEntity<>(labels, HttpStatus.OK);
     }
 
     private Comment getComment(String article_id, String comment_address){
@@ -59,6 +85,17 @@ public class LabelController {
                 comment = comment.replies.get(Integer.parseInt(address[i]));
             }
             return comment;
+        } else {
+            return null;
+        }
+    }
+
+    private Label getLabelComposite(String article_id, String comment_address){
+        Query labelQuery = new Query(Critera.where("article_id").is(article_id));
+        labelQuery.addCriteria(Criteria.where("comment_address").is(comment_address));
+        List<Label> results = mongoTemplate.find(labelQuery, Label.class,"labels");
+        if(results.size()>0){
+            return results.get(0);
         } else {
             return null;
         }

@@ -24,4 +24,28 @@ public class Label{
         this.label = label;
         this.target = target;
     }
+
+    public String getId(){
+        return id;
+    }
+
+    public String getLabeller(){
+        return labeller;
+    }
+
+    public String getArticle_id(){
+        return article_id;
+    }
+    
+    public String getComment_address(){
+        return comment_address;
+    }
+
+    public String getLabel(){
+        return label;
+    }
+
+    public String getTarget(){
+        return target;
+    }
 }
