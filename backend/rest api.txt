@@ -58,7 +58,7 @@ Label REST API:
 		> 404 NOT FOUND if comment cannot be found
 		> 200 OK and the comment if found
 
-	[GET] /api/label: Get a particular label
+	[GET] /api/label: Get a particular label made by the currently logged in user
 	Headers:
 		> article_id: mongo article id
 		> comment_address: comment indice address
@@ -66,7 +66,7 @@ Label REST API:
 		> 200 OK and the label if found
 		> 404 NOT FOUND if label cannot be found
 
-	[POST] /api/label: Label a particular comment
+	[POST] /api/label: Label a particular comment, if already existing overwrite
 	Parameters:
 		> article_id: mongo article id
 		> comment_address: comment indice address

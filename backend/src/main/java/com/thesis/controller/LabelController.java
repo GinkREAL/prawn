@@ -49,9 +49,12 @@ public class LabelController {
         Comment comment = getComment(article_id, comment_address);
         if(comment == null){
             return HttpStatus.NOT_FOUND;
-
-
+        }
         String labeller = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Label oldLabel = getLabelComposite(labeller, article_id, comment_address);
+        if(oldLabel != null){
+            labelRepository.delete(oldLabel);
+        }
         Label newlabel = new Label(labeller, article_id, comment_address, label, target);
         labelRepository.save(newlabel);
         return HttpStatus.CREATED;
@@ -61,7 +64,8 @@ public class LabelController {
     public ResponseEntity<?> getLabel(@RequestHeader(name = "article_id", required=true) String article_id, 
                                     @RequestHeader(name = "comment_address", required=true) String comment_address){
 
-        Label label = getLabelComposite(article_id, comment_address)
+        String user = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Label label = getLabelComposite(user, article_id, comment_address)
         if(label != null)
             return new ResponseEntity<>(label, HttpStatus.OK);
         } else {
@@ -90,8 +94,12 @@ public class LabelController {
         }
     }
 
-    private Label getLabelComposite(String article_id, String comment_address){
-        Query labelQuery = new Query(Critera.where("article_id").is(article_id));
+    private Label getLabelComposite(String username, String article_id, String comment_address){
+        Query labelQuery;
+        if(!username.equals("")){
+            labelQuery.addCriteria(Criteria.where("labeller").is(username))
+        }
+        labelQuery.addCriteria(Critera.where("article_id").is(article_id));
         labelQuery.addCriteria(Criteria.where("comment_address").is(comment_address));
         List<Label> results = mongoTemplate.find(labelQuery, Label.class,"labels");
         if(results.size()>0){
