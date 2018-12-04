@@ -4,11 +4,11 @@
 		<h3>Please follow these instructions:</h3>
 		<p>There will be <b>one or more targets</b> per article. Please label the comments according to the target shown.</p>
 		<ul style="list-style-type:square">
-		  <li>Click the <b>'In Favor'</b> button or press <b>'F'</b> on your keyboard if you can infer from the comment that the commenter <b>supports or has a positive stance</b> towards the target.</li>
+		  <li>Click the <b>'In Favor'</b> button if you can infer from the comment that the commenter <b>supports or has a positive stance</b> towards the target.</li>
 		  <br>
-		  <li>Click the <b>'Against'</b> button or press <b>'A'</b> on your keyboard if you can infer from the comment that the commenter <b>is against or has a negative stance</b> towards the target.</li>
+		  <li>Click the <b>'Against'</b> button if you can infer from the comment that the commenter <b>is against or has a negative stance</b> towards the target.</li>
 		  <br>
-		  <li>Click the <b>'None'</b> button or press <b>'N'</b> on your keyboard if you can infer from the comment that the commenter has a <b>neutral stance</b> towards the target or if the comment is <b>not related</b> to the target.</li>
+		  <li>Click the <b>'None'</b> button if you can infer from the comment that the commenter has a <b>neutral stance</b> towards the target or if the comment is <b>not related</b> to the target.</li>
 		</ul>
 	</div>
 
@@ -32,16 +32,16 @@
 			</div>
 			<div class="row">
 				<div class="col-sm-7">
-					<button type="button" class="btn btn-success btn-block"  (click)="getLabel('favor')">In Favor (F)</button>
-					<button type="button" class="btn btn-warning btn-block" (click)="getLabel('against')">Against (A)</button>
-					<button type="button" class="btn btn-secondary btn-block" (click)="getLabel('none')">None (N)</button>
+					<button type="button" class="btn btn-success btn-block"  (click)="getLabel('favor')">In Favor</button>
+					<button type="button" class="btn btn-warning btn-block" (click)="getLabel('against')">Against</button>
+					<button type="button" class="btn btn-secondary btn-block" (click)="getLabel('none')">None</button>
 				</div>
 				<div class="col-sm-5">
 					<div class="card">
 					  <div class="card-body text-center">
 					  	<!-- get count of labeled comments -->
 					  	<h3>{{ count }}</h3>
-					  	<p>comments labeled in total</p>
+					  	<span>comments labeled in total</span>
 					  </div>
 					</div>
 				</div>
