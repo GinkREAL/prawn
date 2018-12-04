@@ -8,6 +8,7 @@ export class LabelService {
 
   commentUrl = "/api/comment"
   labelUrl = "/api/label"
+  myLabelUrl = "/api/mylabels"
 
   constructor(
     private http: HttpClient
@@ -28,6 +29,18 @@ export class LabelService {
     body.append("label", label)
     body.append("target", target)
     return this.http.post(this.labelUrl, body);
+  }
+
+  getLabel(article_id, comment_address){
+    let headerz = new HttpHeaders({
+      "article_id": article_id,
+      "comment_address": comment_address
+    })
+    return this.http.get(this.labelUrl, {headers: headerz})
+  }
+
+  getMyLabels(){
+    return this.http.get(this.myLabelUrl)
   }
 
 }

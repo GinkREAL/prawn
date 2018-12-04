@@ -28,7 +28,7 @@ export class AuthService {
     this.http.post(this.loginUrl,body).subscribe((object: TokenResponse) => {
         window.localStorage.setItem('token', object.token);
     })
-    let username = this.getSession().subscribe((object: SessionResponse) => {
+    this.getSession().subscribe((object: SessionResponse) => {
       window.localStorage.setItem('username', object.username);
     })
   }
