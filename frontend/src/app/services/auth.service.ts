@@ -21,15 +21,18 @@ export class AuthService {
     private http: HttpClient
   ) { }
 
-  getToken(username, password) {
+  getToken(username, password): boolean {
     let body = new FormData();
     body.append('username',username);
     body.append('password',password);
     this.http.post(this.loginUrl,body).subscribe((object: TokenResponse) => {
         window.localStorage.setItem('token', object.token);
-    })
-    this.getSession().subscribe((object: SessionResponse) => {
-      window.localStorage.setItem('username', object.username);
+        this.getSession().subscribe((object: SessionResponse) => {
+          window.localStorage.setItem('username', object.username);
+          return true;
+        })
+    }, error => {
+      return false;
     })
   }
 
@@ -38,7 +41,6 @@ export class AuthService {
   }
 
   signup(username, password){
-    console.log("asdfawefaewfwefw")
     let body = new FormData();
     body.append("username", username)
     body.append("password", password)
