@@ -1,5 +1,10 @@
+<div class="alert alert-dismissible alert-danger" *ngIf="status === false">
+  <button type="button" class="close" data-dismiss="alert">&times;</button>
+  <strong>Oh snap!</strong> The username or password that you entered is incorrect.
+</div>
+
 <div class="row">
-	<div class="col-6">
+	<div class="col-md-6">
 		<div class="jumbotron text-right">
 	    <h1>Welcome to PRAWn</h1>
 	    <h2>Reddit Comments Labeler</h2>
@@ -7,7 +12,7 @@
 	    <h5>by Al, Gab, and Kingsley</h5>
 	  </div>
 	</div>
-	<div class="col-6">
+	<div class="col-md-6">
 		<h2>Log In</h2>
 		<form>
 		  <div class="form-group">
@@ -19,7 +24,7 @@
 		      <input type="password" class="form-control" id="password" [(ngModel)]="credentials.password" name="password" placeholder="Enter your password">
 		  </div>
 		</form>
-		<button class="btn btn-primary" (click)="loginFunc(credentials)" routerLink="/labeling">Log in</button>
+		<button class="btn btn-primary" (click)="loginFunc(credentials)">Log in</button>
 		&nbsp;&nbsp;<a routerLink="/signup">Be part of our labeling team. Sign up now!</a>
 	</div>
 </div>

@@ -2,8 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Labeling } from '../labeling';
 import { Article } from '../models/article'
+import { Label } from '../models/article'
 import { ArticleService } from '../services/article.service';
 import { LabelService } from '../services/label.service';
+import { AuthService } from '../services/auth.service.js';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-labeling',
@@ -19,7 +22,7 @@ export class LabelingComponent implements OnInit {
 
   labelControl = new FormControl('');
 
-  constructor(private articleService: ArticleService, private labelService: LabelService) {
+  constructor(private articleService: ArticleService, private labelService: LabelService, private authService: AuthService, private router: Router) {
     this['labelValue'] = ''
   }
 
@@ -31,6 +34,11 @@ export class LabelingComponent implements OnInit {
 
   nextTarget(obj) {
     this['target'] = obj['targets'][this['targetCount']]
+  }
+
+  logoutFunc() {
+    this.authService.logout()
+    this.router.navigate(['/', 'login'])
   }
 
   getLabel(labelValue) {
@@ -62,8 +70,10 @@ export class LabelingComponent implements OnInit {
       this['target'] = object['targets'][this['targetCount']]
 
       this['commentAddress'] = 0
-      this['count'] = 0
-      
+      this.labelService.getMyLabels().subscribe((labels: Label[]) => {
+        this['count'] = labels.length
+      })
+
       if (object['comments'][this['commentAddress']]['comment'] != "[deleted]" || object['comments'][this['commentAddress']]['comment'] != "[removed]") {
         this['comment'] = object['comments'][this['commentAddress']]['comment']
       }    
