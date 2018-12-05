@@ -15,17 +15,17 @@ export class SignupComponent implements OnInit {
   }
 
   constructor(private authService: AuthService) {
-    this.newCredentials = {
+    this['newCredentials'] = {
       username: '',
       password: ''
     }
   }
 
   signupFunc(creds) {
-  	this.newCredentials.username = creds.username
-  	this.newCredentials.password = creds.password
-  	console.log(this.newCredentials.username)
-    this.authService.signup(this.newCredentials.username, this.newCredentials.password).subscribe()
+  	this['newCredentials']['username'] = creds.username
+  	this['newCredentials']['password'] = creds.password
+  	console.log(this['newCredentials']['username'])
+    this.authService.signup(this['newCredentials']['username'], this['newCredentials']['password']).subscribe()
   }
 
   ngOnInit() {

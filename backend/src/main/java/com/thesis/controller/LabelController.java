@@ -65,8 +65,8 @@ public class LabelController {
                                     @RequestHeader(name = "comment_address", required=true) String comment_address){
 
         String user = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Label label = getLabelComposite(user, article_id, comment_address)
-        if(label != null)
+        Label label = getLabelComposite(user, article_id, comment_address);
+        if(label != null) {
             return new ResponseEntity<>(label, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -95,11 +95,11 @@ public class LabelController {
     }
 
     private Label getLabelComposite(String username, String article_id, String comment_address){
-        Query labelQuery;
+        Query labelQuery = new Query();
         if(!username.equals("")){
-            labelQuery.addCriteria(Criteria.where("labeller").is(username))
+            labelQuery.addCriteria(Criteria.where("labeller").is(username));
         }
-        labelQuery.addCriteria(Critera.where("article_id").is(article_id));
+        labelQuery.addCriteria(Criteria.where("article_id").is(article_id));
         labelQuery.addCriteria(Criteria.where("comment_address").is(comment_address));
         List<Label> results = mongoTemplate.find(labelQuery, Label.class,"labels");
         if(results.size()>0){

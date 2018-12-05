@@ -20,7 +20,7 @@ export class InterceptorService implements HttpInterceptor {
     var formedRequest = req.clone({headers: currentHeaders});
     return next.handle(formedRequest).pipe(catchError((error: HttpErrorResponse): Observable<any> => {
       console.log(error.status)
-      this.router.navigate('/login')
+      this.router.navigate(['/', 'login'])
       return Observable.throw(error)
       }))
   }
