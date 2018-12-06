@@ -41,18 +41,18 @@ export class LabelingComponent implements OnInit {
     this.router.navigate(['/', 'login'])
   }
 
-  containsComment(arr1, obj) {
-    var i;
-    for (var i = 0; i < arr1.length; i++) {
-      console.log(arr1.indexOf(obj) == this['labeledData'][i]['comment_address'])
-      if (arr1.indexOf(obj) == this['labeledData'][i]['comment_address']) {
-        return true
-      }
-      else {
-        return false
-      }
-    }
-  }
+  // containsComment(arr1, obj) {
+  //   var i;
+  //   for (i = 0; i < arr1.length; i++) {
+  //     console.log(arr1.indexOf(obj) == this['labeledData'][i]['comment_address'])
+  //     if (arr1.indexOf(obj) == this['labeledData'][i]['comment_address']) {
+  //       return true
+  //     }
+  //     else {
+  //       return false
+  //     }
+  //   }
+  // }
 
   getLabel(labelValue) {
     this['labelValue'] = labelValue
@@ -88,10 +88,10 @@ export class LabelingComponent implements OnInit {
       this.labelService.getMyLabels().subscribe((labels: Label[]) => {
         this['count'] = labels.length
         this['labeledData'] = labels
-        if (this['count'] < 3) {
+        if (this['count'] < object['targets'].length) {
           this['commentAddress'] = 0
         } else {
-          this['commentAddress'] = (this['count'] / 3)
+          this['commentAddress'] = (this['count'] / object['targets'].length)
         }
         
         if (object['comments'][this['commentAddress']]['comment'] != "[deleted]" || object['comments'][this['commentAddress']]['comment'] != "[removed]") {
