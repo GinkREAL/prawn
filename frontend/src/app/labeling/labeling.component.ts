@@ -88,8 +88,12 @@ export class LabelingComponent implements OnInit {
       this.labelService.getMyLabels().subscribe((labels: Label[]) => {
         this['count'] = labels.length
         this['labeledData'] = labels
-        this['commentAddress'] = (this['count'] / 3)
-
+        if (this['count'] < 3) {
+          this['commentAddress'] = 0
+        } else {
+          this['commentAddress'] = (this['count'] / 3)
+        }
+        
         if (object['comments'][this['commentAddress']]['comment'] != "[deleted]" || object['comments'][this['commentAddress']]['comment'] != "[removed]") {
           // this['commentsList'] = object['comments']
           // console.log(this['commentsList'])
