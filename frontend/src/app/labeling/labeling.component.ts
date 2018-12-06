@@ -41,20 +41,35 @@ export class LabelingComponent implements OnInit {
     this.router.navigate(['/', 'login'])
   }
 
+  containsComment(arr1, obj) {
+    var i;
+    for (var i = 0; i < arr1.length; i++) {
+      console.log(arr1.indexOf(obj) == this['labeledData'][i]['comment_address'])
+      if (arr1.indexOf(obj) == this['labeledData'][i]['comment_address']) {
+        return true
+      }
+      else {
+        return false
+      }
+    }
+  }
+
   getLabel(labelValue) {
     this['labelValue'] = labelValue
     this.labelService.postLabel(this['id'], this['commentAddress'].toString(), this['labelValue'], this['target']).subscribe()
     if (this['targetCount'] < this['object']['targets'].length) {
       this['targetCount'] += 1
-      this.nextTarget(this['object'])  
+      this.nextTarget(this['object'])
     }
     if (this['targetCount'] == this['object']['targets'].length) {
       this['commentAddress'] += 1
       this.nextComment(this['object'])
       this['targetCount'] = 0
       this.nextTarget(this['object'])
-      this['count'] += 1
     }
+    this.labelService.getMyLabels().subscribe((labels: Label[]) => {
+      this['count'] = labels.length
+    })  
   }
 
   ngOnInit() {
@@ -69,14 +84,25 @@ export class LabelingComponent implements OnInit {
       this['targetCount'] = 0
       this['target'] = object['targets'][this['targetCount']]
 
-      this['commentAddress'] = 0
+     
       this.labelService.getMyLabels().subscribe((labels: Label[]) => {
         this['count'] = labels.length
-      })
+        this['labeledData'] = labels
+        this['commentAddress'] = (this['count'] / 3)
 
-      if (object['comments'][this['commentAddress']]['comment'] != "[deleted]" || object['comments'][this['commentAddress']]['comment'] != "[removed]") {
-        this['comment'] = object['comments'][this['commentAddress']]['comment']
-      }    
+        if (object['comments'][this['commentAddress']]['comment'] != "[deleted]" || object['comments'][this['commentAddress']]['comment'] != "[removed]") {
+          // this['commentsList'] = object['comments']
+          // console.log(this['commentsList'])
+          // console.log(this['commentsList'].indexOf(object['comments'][this['commentAddress']]))
+          // console.log(this.containsComment(this['commentsList'], object['comments'][this['commentAddress']]))
+          // if (this.containsComment(this['commentsList'], object['comments'][this['commentAddress']]) === true) {
+          //   this['comment'] = object['comments'][this['commentAddress']]['comment']
+          // }
+          // console.log(object['comments'])
+          
+          this['comment'] = object['comments'][this['commentAddress']]['comment']
+        }    
+      })
     })
   }
 
