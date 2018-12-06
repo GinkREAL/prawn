@@ -51,7 +51,7 @@ public class LabelController {
             return HttpStatus.NOT_FOUND;
         }
         String labeller = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Label oldLabel = getLabelComposite(labeller, article_id, comment_address);
+        Label oldLabel = getLabelComposite(labeller, target, article_id, comment_address);
         if(oldLabel != null){
             labelRepository.delete(oldLabel);
         }
@@ -65,7 +65,7 @@ public class LabelController {
                                     @RequestHeader(name = "comment_address", required=true) String comment_address){
 
         String user = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Label label = getLabelComposite(user, article_id, comment_address);
+        Label label = getLabelComposite(user, "", article_id, comment_address);
         if(label != null) {
             return new ResponseEntity<>(label, HttpStatus.OK);
         } else {
@@ -94,10 +94,13 @@ public class LabelController {
         }
     }
 
-    private Label getLabelComposite(String username, String article_id, String comment_address){
+    private Label getLabelComposite(String username, String target, String article_id, String comment_address){
         Query labelQuery = new Query();
         if(!username.equals("")){
             labelQuery.addCriteria(Criteria.where("labeller").is(username));
+        }
+        if(!target.equals("")){
+            labelQuery.addCriteria(Criteria.where("target").is(target));
         }
         labelQuery.addCriteria(Criteria.where("article_id").is(article_id));
         labelQuery.addCriteria(Criteria.where("comment_address").is(comment_address));

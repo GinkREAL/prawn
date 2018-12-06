@@ -25,20 +25,19 @@ public class UserController {
 
     @RequestMapping(value="/api/user", method = RequestMethod.POST)
     public HttpStatus signup(String username, String password) {
-
-
         if(userRepository.existsByUsername(username)){
             return HttpStatus.BAD_REQUEST;
         }
-
+        boolean endorsed = false;
         String requesterName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User requester = userRepository.findByUsername(requesterName);
-        if(!requester.getRole().equals("ROLE_ADMIN")){
-            System.out.println(requester.getRole());
-            return HttpStatus.FORBIDDEN;
+        if(!requesterName.equals("anonymousUser")){
+            User requester = userRepository.findByUsername(requesterName);
+            if(requester.getRole().equals("ROLE_ADMIN")){
+                endorsed = true;
+            }
         }
         password = passwordEncoder.encode(password);
-        User newuser = new User(username, password, "ROLE_USER");
+        User newuser = new User(username, password, "ROLE_USER", endorsed);
         userRepository.save(newuser);
 
         if(userRepository.existsByUsername(username)){

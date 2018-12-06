@@ -16,11 +16,13 @@ public class User implements UserDetails{
     private String username;
     private String password;
     private String role;
+    private boolean endorsed;
 
-    public User(String username, String password, String role){
+    public User(String username, String password, String role, boolean endorsed){
         this.username = username;
         this.password = password;
         this.role = role;
+        this.endorsed = endorsed;
     }
 
     public Collection<? extends GrantedAuthority> getAuthorities(){ //does not work
@@ -39,6 +41,10 @@ public class User implements UserDetails{
 
     public String getUsername(){
         return username;
+    }
+
+    public boolean isEndorsed(){
+        return endorsed;
     }
 
     public boolean isAccountNonExpired(){

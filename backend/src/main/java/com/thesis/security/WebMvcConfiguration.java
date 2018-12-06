@@ -14,10 +14,8 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 		return new BCryptPasswordEncoder();
 	}
 
-	/*@Override
+	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry rr) {
-		rr.addResourceHandler("/static/**").addResourceLocations("classpath:/public/static/");
-		rr.addResourceHandler("/index.html").addResourceLocations("classpath:/public/index.html");
-		rr.addResourceHandler("/favicon.ico").addResourceLocations("classpath:/public/favicon.ico");
-	}*/
+		rr.addResourceHandler("/").addResourceLocations("classpath:/static/");
+	}
 }
