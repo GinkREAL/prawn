@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Labeling } from '../labeling';
 import { Article } from '../models/article'
-import { Label } from '../models/article'
+import { Label } from '../models/label'
 import { ArticleService } from '../services/article.service';
 import { LabelService } from '../services/label.service';
 import { AuthService } from '../services/auth.service.js';

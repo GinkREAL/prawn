@@ -17,14 +17,13 @@ export class InterceptorService implements HttpInterceptor {
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>>{
     var currentHeaders: HttpHeaders = req.headers
     var token = window.localStorage.getItem('token')
-    if(token === null){
-      this.router.navigate(['/','/login'])
+    if(token != null){
+      currentHeaders = currentHeaders.append('Authorization', 'Bearer ' + window.localStorage.getItem('token'));
     }
-    currentHeaders = currentHeaders.append('Authorization', 'Bearer ' + window.localStorage.getItem('token'));
     var formedRequest = req.clone({headers: currentHeaders})
     return next.handle(formedRequest).pipe(catchError((error: HttpErrorResponse): Observable<any> => {
       this.router.navigate(['/', 'login'])
-      return error
+      return of(error)
       }))
   }
 }
