@@ -29,7 +29,7 @@ public class ArticleController { //read only
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    //db.articles.update({"_id":ObjectId('5badfc4f62b80e155641dcee')},{$set:{"valid":true, "targets":["Donald Trump", "man", "Taliban"]}})
+    //db.articles.update({"_id":ObjectId('5badfc4f62b80e155641dcee')},{$set:{"valid":true, "targets":["Donald Trump", "Man rescued from Taliban"]}})
 
 	@RequestMapping(value = "api/randomarticle", method = RequestMethod.GET)
 	public ResponseEntity<?> fullrandom() {
