@@ -9,6 +9,7 @@ import { LoginComponent } from './login/login.component';
 import { LabelingComponent } from './labeling/labeling.component';
 import { InterceptorService } from './services/interceptor.service';
 import { SignupComponent } from './signup/signup.component';
+import { ParticlesModule } from 'angular-particle';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { SignupComponent } from './signup/signup.component';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    ParticlesModule
   ],
   providers: [
     {
