@@ -5,6 +5,8 @@ import getpass
 import praw
 import datetime
 
+# Comprehensive tool to scrape reddit, add targets and simulataneously generate heatmaps
+
 client = MongoClient('127.0.0.1', 27017)
 db = client.reddit
 errout = open('error.log', 'w')
@@ -129,7 +131,8 @@ def generateHeatmaps():
     progress = 0
     total = str(db.articles.estimated_document_count())
     for article in db.articles.find():
-        print("Progress: " + str(progress + 1) + "/" + total + " Comments: " + str(article['num_comments']))
+        print("Progress: " + str(progress + 1) + "/" + total +
+              " Comments: " + str(article['num_comments']))
         listing = []
         for x in range(len(article['comments'])):
             heatmapstage1(article['comments'][x], listing, str(x))
@@ -148,13 +151,44 @@ def heatmapstage1(forest, listing, comment_address):
     })
     if 'replies' in forest:
         for z in range(len(forest['replies'])):
-            heatmapstage1(forest['replies'][z], listing, comment_address + "," + str(z))
+            heatmapstage1(forest['replies'][z], listing,
+                          comment_address + "," + str(z))
     return
+
+
+def tagArticles():
+    for article in db.articles.find():
+        if 'targets' in article:
+            continue
+        else:
+            print("Labeling>" + article['title'])
+            inp = ""
+            targets = []
+            while inp != 'ok':
+                print(">> ", end='')
+                inp = input()
+                if inp == 'cancel':
+                    return
+                elif inp == 'preview':
+                    for i in range(10):
+                        preview = article['comments'][i]
+                        print("=====")
+                        print(preview['comment'])
+                    continue
+                elif inp == 'undo':
+                    del targets[-1]
+                else:
+                    targets.append(inp)
+                print(targets)
+            db.articles.find_one_and_update({'_id': article['id']}, {
+                                            '$set': {'targets': targets}})
 
 
 # main code
 command = ['notexit']
 subreddit = None
+print("PRAWn helper tool.")
+print("'help' for help")
 while command[0] != "exit":
     if subreddit is None:
         print("> ", end='')
@@ -190,8 +224,32 @@ while command[0] != "exit":
             updatetimestamps()
         elif command[0] == 'heatmap':  # generates heatmaps
             generateHeatmaps()
-        elif command[0] == 'forceupdate':  # updates all non archived rgardless of timestamp
-            print("Unimplemented function")
+        elif command[0] == 'target':  # adds targets for articles
+            print("Targeting helper module.")
+            print("Commands:")
+            print("preview, undo, cancel, ok")
+            print("anything else will be added as a target")
+            print("once a targetlist has been confirmed, it can")
+            print("only be removed  manually through mongodb")
+            tagArticles()
+        elif command[0] == 'truncate':
+            threshold = int(command[1])
+            result = db.articles.delete_many(
+                {'num_comments': {'$lt': threshold}})
+            print("Deleted: " + str(result.deleted_count))
+        elif command[0] == 'help':
+            print("=====PRAWn Helper Tool======")
+            print("connect => connects to reddit, necessary for all scraping functions")
+            print("use => sets the current subreddit, necessary after connecting")
+            print(
+                "scrape <reddit_id> => scrapes a reddit article based on ID found in url")
+            print("hot => scrapes top 25 of current subreddit's hot listing")
+            print("auto => scrapes top 500 of all time of current subreddit")
+            print("touchall => updates modified timestamps so nothing gets updated")
+            print("heatmap => generates a fresh heatmap to be used by the database")
+            print("target => adds target for articles")
+            print("truncate <threshold> => deletes articles under this comment amount")
+            print("============================")
         else:
             print("Unknown command")
     except Exception as e:
