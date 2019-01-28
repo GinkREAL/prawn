@@ -5,6 +5,7 @@ import com.thesis.model.Label;
 import com.thesis.model.Comment;
 import com.thesis.model.ArticleRepository;
 import com.thesis.model.LabelRepository;
+import com.thesis.model.UserRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,7 +25,7 @@ import org.springframework.data.mongodb.core.query.Query;
 
 
 @RestController
-public class LabelController {
+public class LabelController { //controls both comments and labels, actually
 
     @Autowired
     private ArticleRepository articleRepository;
@@ -37,6 +38,18 @@ public class LabelController {
     public ResponseEntity<?> verify(@RequestHeader(name = "article_id", required=true) String article_id, 
                                     @RequestHeader(name = "comment_address", required=true) String comment_address) {
         Comment comment = getComment(article_id, comment_address);
+        if(comment == null){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(comment,HttpStatus.OK);
+        }
+    }
+
+    @RequestMapping(value = "api/comment", method = RequestMethod.GET)
+    public ResponseEntity<?> verifyz() {
+        String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userRepository.findByUsername(username);
+        
         if(comment == null){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {

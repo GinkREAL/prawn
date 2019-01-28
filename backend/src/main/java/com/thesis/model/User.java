@@ -1,5 +1,6 @@
 package com.thesis.model;
 
+import java.util.List;
 import java.util.Collection;
 import java.util.ArrayList;
 
@@ -17,12 +18,15 @@ public class User implements UserDetails{
     private String password;
     private String role;
     private boolean endorsed;
+    private List<String> assignedArticles;
+    private String checkpoint;
 
     public User(String username, String password, String role, boolean endorsed){
         this.username = username;
         this.password = password;
         this.role = role;
         this.endorsed = endorsed;
+        this.assignedArticles = new ArrayList<String>();
     }
 
     public Collection<? extends GrantedAuthority> getAuthorities(){ //does not work
@@ -65,5 +69,27 @@ public class User implements UserDetails{
 
     public void setPassword(String password){
         this.password = password;
+    }
+
+    public void setAssignedArticles(List<String> assignedArticles){
+        this.assignedArticles = assignedArticles;
+    }
+
+    public List<String> getAssignedArticles(){
+        if(assignedArticles == null){
+            assignedArticles = new ArrayList<String>();
+        }
+        return assignedArticles;
+    }
+    
+    public String getCheckpoint(){
+        if(checkpoint == null){
+            checkpoint = "00";
+        }
+        return checkpoint;
+    }
+
+    public void setCheckpoint(String checkpoint){
+        this.checkpoint = checkpoint;
     }
 }

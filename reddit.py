@@ -177,10 +177,12 @@ def tagArticles():
                     continue
                 elif inp == 'undo':
                     del targets[-1]
+                elif inp == 'ok':
+                    break
                 else:
                     targets.append(inp)
                 print(targets)
-            db.articles.find_one_and_update({'_id': article['id']}, {
+            db.articles.find_one_and_update({'_id': article['_id']}, {
                                             '$set': {'targets': targets}})
 
 
