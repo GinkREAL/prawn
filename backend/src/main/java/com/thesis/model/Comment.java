@@ -5,6 +5,8 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 public class Comment{
+    public String article;
+    public String address;
     public String comment;
     public String created_utc;
     public String distinguished;

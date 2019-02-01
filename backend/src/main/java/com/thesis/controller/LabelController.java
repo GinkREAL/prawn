@@ -5,7 +5,10 @@ import com.thesis.model.Label;
 import com.thesis.model.Comment;
 import com.thesis.model.ArticleRepository;
 import com.thesis.model.LabelRepository;
+import com.thesis.model.User;
 import com.thesis.model.UserRepository;
+import com.thesis.model.Heatmap;
+import com.thesis.model.HeatmapRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -32,29 +35,27 @@ public class LabelController { //controls both comments and labels, actually
     @Autowired
     private LabelRepository labelRepository;
     @Autowired
+    private HeatmapRepository heatmapRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
     private MongoTemplate mongoTemplate;
-
-    @RequestMapping(value = "api/comment", method = RequestMethod.GET)
-    public ResponseEntity<?> verify(@RequestHeader(name = "article_id", required=true) String article_id, 
-                                    @RequestHeader(name = "comment_address", required=true) String comment_address) {
-        Comment comment = getComment(article_id, comment_address);
-        if(comment == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<>(comment,HttpStatus.OK);
-        }
-    }
 
     @RequestMapping(value = "api/comment", method = RequestMethod.GET)
     public ResponseEntity<?> verifyz() {
         String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userRepository.findByUsername(username);
-        
-        if(comment == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        } else {
-            return new ResponseEntity<>(comment,HttpStatus.OK);
-        }
+
+        String[] checkpoint = user.getCheckpoint().split(",");
+        String articleid = user.getAssignedArticles().get(Integer.parseInt(checkpoint[0]));
+        Heatmap hm = heatmapRepository.findByArticle(articleid);
+        if(hm == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        String caddress = hm.getAddress(Integer.parseInt(checkpoint[1]));
+        Comment comment = getComment(articleid, caddress);
+        comment.replies = null;
+        comment.article = articleid;
+        comment.address = caddress;
+        return new ResponseEntity<>(comment, HttpStatus.OK);
     }
 
     @RequestMapping(value = "api/label", method = RequestMethod.POST)
@@ -69,6 +70,20 @@ public class LabelController { //controls both comments and labels, actually
             labelRepository.delete(oldLabel);
         }
         Label newlabel = new Label(labeller, article_id, comment_address, label, target);
+        User user = userRepository.findByUsername(labeller);
+        String[] checkpoint = user.getCheckpoint().split(",");
+        Heatmap hm = heatmapRepository.findByArticle(article_id);
+        String caddress = hm.getAddress(Integer.parseInt(checkpoint[1]));
+        if(comment_address.equals(caddress)) {
+            int temp = Integer.parseInt(checkpoint[1]) + 1;
+            if(temp > 5){
+                int temp2 = Integer.parseInt(checkpoint[0]) + 1;
+                user.setCheckpoint(Integer.toString(temp2) + ",0");
+            } else {
+                user.setCheckpoint(checkpoint[0] + "," + Integer.toString(temp));
+            }
+        }
+        userRepository.save(user);
         labelRepository.save(newlabel);
         return HttpStatus.CREATED;
     }

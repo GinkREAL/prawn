@@ -84,7 +84,7 @@ public class User implements UserDetails{
     
     public String getCheckpoint(){
         if(checkpoint == null){
-            checkpoint = "00";
+            checkpoint = "0,0";
         }
         return checkpoint;
     }

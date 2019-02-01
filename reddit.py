@@ -137,7 +137,7 @@ def generateHeatmaps():
         for x in range(len(article['comments'])):
             heatmapstage1(article['comments'][x], listing, str(x))
         final = {
-            'article_id': article['_id'],
+            'article': str(article['_id']),
             'heatmap': sorted(listing, key=itemgetter('score'), reverse=True)
         }
         db.heatmaps.insert_one(final)
