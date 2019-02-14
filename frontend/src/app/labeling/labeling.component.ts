@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { Labeling } from '../labeling';
 import { Article } from '../models/article'
+import { Comment } from '../models/comment'
 import { Label } from '../models/label'
 import { ArticleService } from '../services/article.service';
 import { LabelService } from '../services/label.service';
@@ -20,15 +21,17 @@ export class LabelingComponent implements OnInit {
     name: 'labeling'
   };
 
-  labelControl = new FormControl('');
+  labelControl = new FormControl();
 
   constructor(private articleService: ArticleService, private labelService: LabelService, private authService: AuthService, private router: Router) {
     this['labelValue'] = ''
   }
 
   nextComment(obj) {
-    if (obj['comments'][this['commentAddress']]['comment'] != "[deleted]" || obj['comments'][this['commentAddress']]['comment'] != "[removed]") {
-      this['comment'] = obj['comments'][this['commentAddress']]['comment']
+    if (obj != null) {
+      if (obj['comments'][0]['comment'] != "[deleted]" || obj['comments'][0]['comment'] != "[removed]") {
+        this['comment'] = obj['comments'][0]['comment']
+      }
     }
   }
 
@@ -41,19 +44,6 @@ export class LabelingComponent implements OnInit {
     this.router.navigate(['/', 'login'])
   }
 
-  // containsComment(arr1, obj) {
-  //   var i;
-  //   for (i = 0; i < arr1.length; i++) {
-  //     console.log(arr1.indexOf(obj) == this['labeledData'][i]['comment_address'])
-  //     if (arr1.indexOf(obj) == this['labeledData'][i]['comment_address']) {
-  //       return true
-  //     }
-  //     else {
-  //       return false
-  //     }
-  //   }
-  // }
-
   getLabel(labelValue) {
     this['labelValue'] = labelValue
     this.labelService.postLabel(this['id'], this['commentAddress'].toString(), this['labelValue'], this['target']).subscribe()
@@ -62,7 +52,7 @@ export class LabelingComponent implements OnInit {
       this.nextTarget(this['object'])
     }
     if (this['targetCount'] == this['object']['targets'].length) {
-      this['commentAddress'] += 1
+      // this['commentAddress'] += 1
       this.nextComment(this['object'])
       this['targetCount'] = 0
       this.nextTarget(this['object'])
@@ -75,7 +65,7 @@ export class LabelingComponent implements OnInit {
   ngOnInit() {
     this['username'] = window.localStorage.getItem('username');
 
-    this.articleService.getRandomArticle().subscribe((object: Article) => {
+    this.labelService.getComment().subscribe((object: Article) => {
       this['object'] = object
       this['id'] = object['id']
       this['title'] = object['title']
@@ -84,30 +74,56 @@ export class LabelingComponent implements OnInit {
       this['targetCount'] = 0
       this['target'] = object['targets'][this['targetCount']]
 
-     
       this.labelService.getMyLabels().subscribe((labels: Label[]) => {
         this['count'] = labels.length
         this['labeledData'] = labels
         if (this['count'] < object['targets'].length) {
-          this['commentAddress'] = 0
+          this['commentAddress'] = object['comments'][0][address]
         } else {
-          this['commentAddress'] = (this['count'] / object['targets'].length)
+          this['commentAddress'] = object['comments'][0][address]
         }
         
-        if (object['comments'][this['commentAddress']]['comment'] != "[deleted]" || object['comments'][this['commentAddress']]['comment'] != "[removed]") {
-          // this['commentsList'] = object['comments']
-          // console.log(this['commentsList'])
-          // console.log(this['commentsList'].indexOf(object['comments'][this['commentAddress']]))
-          // console.log(this.containsComment(this['commentsList'], object['comments'][this['commentAddress']]))
-          // if (this.containsComment(this['commentsList'], object['comments'][this['commentAddress']]) === true) {
-          //   this['comment'] = object['comments'][this['commentAddress']]['comment']
-          // }
-          // console.log(object['comments'])
-          
-          this['comment'] = object['comments'][this['commentAddress']]['comment']
-        }    
+        if (object != null) {
+           if (object['comments'][0]['comment'] != "[deleted]" || object['comments'][0]['comment'] != "[removed]") {
+             this['comment'] = object['comments'][0]['comment']
+           }
+        }
+         else {
+           this.labelService.assignArticle()
+        }
       })
     })
+
+    // this.articleService.getRandomArticle().subscribe((object: Article) => {
+    //   this['object'] = object
+    //   this['id'] = object['id']
+    //   this['title'] = object['title']
+    //   this['url'] = object['url']
+
+    //   this['targetCount'] = 0
+    //   this['target'] = object['targets'][this['targetCount']]
+
+     
+    //   this.labelService.getMyLabels().subscribe((labels: Label[]) => {
+    //     this['count'] = labels.length
+    //     this['labeledData'] = labels
+    //     if (this['count'] < object['targets'].length) {
+    //       this['commentAddress'] = 0
+    //     } else {
+    //       this['commentAddress'] = (this['count'] / object['targets'].length)
+    //     }
+        
+    //     if (this.labelService.getComment() != null) {
+    //       this['comment'] = this.labelService.getComment().comment
+    //        // if (this.labelService.getComment() != "[deleted]" || this.labelService.getComment() != "[removed]") {
+    //        //   this['comment'] = this.labelService.getComment()
+    //        // }
+    //      }
+    //      else {
+    //        this.labelService.assignArticle()
+    //      }
+    //   })
+    // })
   }
 
 }

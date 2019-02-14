@@ -11,6 +11,7 @@ import com.thesis.model.Heatmap;
 import com.thesis.model.HeatmapRepository;
 
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,13 +50,16 @@ public class LabelController { //controls both comments and labels, actually
         String[] checkpoint = user.getCheckpoint().split(",");
         String articleid = user.getAssignedArticles().get(Integer.parseInt(checkpoint[0]));
         Heatmap hm = heatmapRepository.findByArticle(articleid);
-        if(hm == null) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Optional<Article> article = articleRepository.findById(articleid);
+        if(hm == null || !article.isPresent()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         String caddress = hm.getAddress(Integer.parseInt(checkpoint[1]));
         Comment comment = getComment(articleid, caddress);
+        ArrayList<Comment> display = new ArrayList<Comment>();
         comment.replies = null;
-        comment.article = articleid;
         comment.address = caddress;
-        return new ResponseEntity<>(comment, HttpStatus.OK);
+        display.add(comment);
+        article.get().setDisplay(display);
+        return new ResponseEntity<>(article.get(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "api/label", method = RequestMethod.POST)

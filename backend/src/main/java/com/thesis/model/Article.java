@@ -96,4 +96,8 @@ public class Article{
     public String[] getTargets(){
         return targets;
     }
+
+    public void setDisplay(List<Comment> comments){
+        this.comments = comments;
+    }
 }

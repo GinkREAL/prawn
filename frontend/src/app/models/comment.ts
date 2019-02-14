@@ -1,5 +1,6 @@
 export class Comment {
     comment: string;
+    address: string;
     created_utc: string;
     distinguished: string;
     edited: Object;
@@ -9,4 +10,5 @@ export class Comment {
     author_fullame: string;
     author: string;
     replies: Comment[];
+    targets: string[];
 }
