@@ -27,12 +27,19 @@ export class LabelingComponent implements OnInit {
     this['labelValue'] = ''
   }
 
-  nextComment(obj) {
-    if (obj != null) {
-      if (obj['comments'][0]['comment'] != "[deleted]" || obj['comments'][0]['comment'] != "[removed]") {
-        this['comment'] = obj['comments'][0]['comment']
+  undo() {
+    // insert functionality here
+  }
+
+  nextComment() {
+    this.labelService.getComment().subscribe((object: Article) => {
+      this['commentAddress'] = object['comments'][0]['address']
+      if (object != null) {
+        if (object['comments'][0]['comment'] != "[deleted]" || object['comments'][0]['comment'] != "[removed]") {
+          this['comment'] = object['comments'][0]['comment']
+        }
       }
-    }
+    })
   }
 
   nextTarget(obj) {
@@ -52,8 +59,7 @@ export class LabelingComponent implements OnInit {
       this.nextTarget(this['object'])
     }
     if (this['targetCount'] == this['object']['targets'].length) {
-      // this['commentAddress'] += 1
-      this.nextComment(this['object'])
+      this.nextComment()
       this['targetCount'] = 0
       this.nextTarget(this['object'])
     }
@@ -78,9 +84,9 @@ export class LabelingComponent implements OnInit {
         this['count'] = labels.length
         this['labeledData'] = labels
         if (this['count'] < object['targets'].length) {
-          this['commentAddress'] = object['comments'][0][address]
+          this['commentAddress'] = object['comments'][0]['address']
         } else {
-          this['commentAddress'] = object['comments'][0][address]
+          this['commentAddress'] = object['comments'][0]['address']
         }
         
         if (object != null) {
