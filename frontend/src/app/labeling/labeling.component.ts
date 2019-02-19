@@ -25,14 +25,30 @@ export class LabelingComponent implements OnInit {
 
   constructor(private articleService: ArticleService, private labelService: LabelService, private authService: AuthService, private router: Router) {
     this['labelValue'] = ''
+    this['stack'] = [];
   }
 
   undo() {
-    // insert functionality here
+    this['object'] = this['stack'].pop()
+    console.log(this['object'])
+    this['id'] = this['object']['id']
+    this['title'] = this['object']['title']
+    this['url'] = this['object']['url']
+
+    this['targetCount'] -= 1
+    this['target'] = this['object']['targets'][this['targetCount']]
+    this['commentAddress'] = this['object']['comments'][0]['address']
+    if (this['object'] != null) {
+      if (this['object']['comments'][0]['comment'] != "[deleted]" || this['object']['comments'][0]['comment'] != "[removed]") {
+        this['comment'] = this['object']['comments'][0]['comment']
+      }
+    }
+    this['count'] -= 1
   }
 
   nextComment() {
     this.labelService.getComment().subscribe((object: Article) => {
+      this['stack'].push(object)
       this['commentAddress'] = object['comments'][0]['address']
       if (object != null) {
         if (object['comments'][0]['comment'] != "[deleted]" || object['comments'][0]['comment'] != "[removed]") {
@@ -43,6 +59,7 @@ export class LabelingComponent implements OnInit {
   }
 
   nextTarget(obj) {
+    this['stack'].push(obj)
     this['target'] = obj['targets'][this['targetCount']]
   }
 
@@ -72,6 +89,8 @@ export class LabelingComponent implements OnInit {
     this['username'] = window.localStorage.getItem('username');
 
     this.labelService.getComment().subscribe((object: Article) => {
+      this['stack'].push(object)
+      console.log(this['stack'])
       this['object'] = object
       this['id'] = object['id']
       this['title'] = object['title']
