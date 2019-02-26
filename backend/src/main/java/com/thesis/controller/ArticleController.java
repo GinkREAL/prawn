@@ -53,6 +53,7 @@ public class ArticleController { //read only
         String username = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userRepository.findByUsername(username);
         Query filterQuery = new Query(Criteria.where("id").nin(user.getAssignedArticles()));
+        filterQuery.addCriteria(Criteria.where("targets").exists(true));
         CloseableIterator<Article> allArticles = mongoTemplate.stream(filterQuery, Article.class, "articles");
         while(allArticles.hasNext()){
             System.out.println("debug");

@@ -20,7 +20,7 @@ export class LabelService {
   }
 
   assignArticle() {
-    return this.http.post(this.article)
+    return this.http.post(this.article, {})
   }
 
   postLabel(article_id, comment_address, label, target){

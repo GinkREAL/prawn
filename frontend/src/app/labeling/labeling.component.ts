@@ -29,21 +29,25 @@ export class LabelingComponent implements OnInit {
   }
 
   undo() {
-    this['object'] = this['stack'].pop()
-    console.log(this['object'])
-    this['id'] = this['object']['id']
-    this['title'] = this['object']['title']
-    this['url'] = this['object']['url']
+    if(this['targetCount'] > 0){
+      this['targetCount'] -= 1
+    } else {
+      this['object'] = this['stack'].pop()
+      console.log(this['object'])
+      this['id'] = this['object']['id']
+      this['title'] = this['object']['title']
+      this['url'] = this['object']['url']
 
-    this['targetCount'] -= 1
-    this['target'] = this['object']['targets'][this['targetCount']]
-    this['commentAddress'] = this['object']['comments'][0]['address']
-    if (this['object'] != null) {
-      if (this['object']['comments'][0]['comment'] != "[deleted]" || this['object']['comments'][0]['comment'] != "[removed]") {
-        this['comment'] = this['object']['comments'][0]['comment']
+      this['commentAddress'] = this['object']['comments'][0]['address']
+      if (this['object'] != null) {
+        if (this['object']['comments'][0]['comment'] != "[deleted]" || this['object']['comments'][0]['comment'] != "[removed]") {
+          this['comment'] = this['object']['comments'][0]['comment']
+        }
       }
+      this['count'] -= 1
+      this['targetCount'] = 0
     }
-    this['count'] -= 1
+    this['target'] = this['object']['targets'][this['targetCount']]
   }
 
   nextComment() {
@@ -59,7 +63,6 @@ export class LabelingComponent implements OnInit {
   }
 
   nextTarget(obj) {
-    this['stack'].push(obj)
     this['target'] = obj['targets'][this['targetCount']]
   }
 

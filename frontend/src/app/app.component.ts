@@ -56,7 +56,8 @@ export class AppComponent {
             mode: "repulse"
           },
           onhover: {
-            enable: false
+            enable: true,
+            mode: "repulse"
           }
         }
       }
