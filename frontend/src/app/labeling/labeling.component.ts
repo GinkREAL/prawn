@@ -51,13 +51,20 @@ export class LabelingComponent implements OnInit {
   }
 
   nextComment() {
+    // if () {
+
+    // }
+    // else {
+    //   this.labelService.assignArticle()
+    // }
     this.labelService.getComment().subscribe((object: Article) => {
-      this['stack'].push(object)
+      // this['stack'].push(object)
       this['commentAddress'] = object['comments'][0]['address']
       if (object != null) {
-        if (object['comments'][0]['comment'] != "[deleted]" || object['comments'][0]['comment'] != "[removed]") {
-          this['comment'] = object['comments'][0]['comment']
-        }
+        this['comment'] = object['comments'][0]['comment']
+      }
+      else {
+        this.labelService.assignArticle().subscribe()
       }
     })
   }
@@ -72,6 +79,7 @@ export class LabelingComponent implements OnInit {
   }
 
   getLabel(labelValue) {
+    this['stack'].push(this['object'])
     this['labelValue'] = labelValue
     this.labelService.postLabel(this['id'], this['commentAddress'].toString(), this['labelValue'], this['target']).subscribe()
     if (this['targetCount'] < this['object']['targets'].length) {
@@ -92,7 +100,7 @@ export class LabelingComponent implements OnInit {
     this['username'] = window.localStorage.getItem('username');
 
     this.labelService.getComment().subscribe((object: Article) => {
-      this['stack'].push(object)
+      // this['stack'].push(object)
       console.log(this['stack'])
       this['object'] = object
       this['id'] = object['id']
@@ -112,12 +120,10 @@ export class LabelingComponent implements OnInit {
         }
         
         if (object != null) {
-           if (object['comments'][0]['comment'] != "[deleted]" || object['comments'][0]['comment'] != "[removed]") {
-             this['comment'] = object['comments'][0]['comment']
-           }
+          this['comment'] = object['comments'][0]['comment']
         }
          else {
-           this.labelService.assignArticle()
+          this.labelService.assignArticle().subscribe()
         }
       })
     })

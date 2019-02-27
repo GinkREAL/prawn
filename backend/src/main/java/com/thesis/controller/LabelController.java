@@ -80,7 +80,7 @@ public class LabelController { //controls both comments and labels, actually
         String caddress = hm.getAddress(Integer.parseInt(checkpoint[1]));
         if(comment_address.equals(caddress)) {
             int temp = Integer.parseInt(checkpoint[1]) + 1;
-            if(temp > 5){
+            if(temp > 100){
                 int temp2 = Integer.parseInt(checkpoint[0]) + 1;
                 user.setCheckpoint(Integer.toString(temp2) + ",0");
             } else {
