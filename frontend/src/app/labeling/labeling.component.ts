@@ -33,8 +33,9 @@ export class LabelingComponent implements OnInit {
   }
 
   undo() {
-    if(this['targetCount'] > 0){
+    if(this['targetCount'] > 0 && this['targetCount'] < this['object']['targets'].length){
       this['targetCount'] -= 1
+      this['count'] -= 1
     } else {
       this['object'] = this['stack'].pop()
       console.log(this['object'])
@@ -43,37 +44,33 @@ export class LabelingComponent implements OnInit {
       this['url'] = this['object']['url']
 
       this['commentAddress'] = this['object']['comments'][0]['address']
-      if (this['object'] != null) {
-        if (this['object']['comments'][0]['comment'] != "[deleted]" || this['object']['comments'][0]['comment'] != "[removed]") {
-          this['comment'] = this['object']['comments'][0]['comment']
-        }
-      }
+      this['comment'] = this['object']['comments'][0]['comment']
+
       this['count'] -= 1
-      this['targetCount'] = 0
+      this['targetCount'] = this['object']['targets'].length - 1
     }
     this['target'] = this['object']['targets'][this['targetCount']]
   }
 
   nextComment() {
-    try {
-      try {
-        this.labelService.getComment().subscribe((object: Article) => {
-          // this['stack'].push(object)
-          console.log(object['comments'][0]['address'])
-          this['commentAddress'] = object['comments'][0]['address']
-          this['comment'] = object['comments'][0]['comment']
+    this.labelService.getComment().subscribe((object: Article) => {
+      // this['stack'].push(object)
+      this['success'] = true
+      console.log(object['comments'][0]['address'])
+      this['commentAddress'] = object['comments'][0]['address']
+      this['comment'] = object['comments'][0]['comment']
+    }, error => {
+      console.log(error)
+    }, () => {
+      if (this['success'] == true) {
+        console.log("success")
+      } else {
+        this.labelService.assignArticle().subscribe(() => {
+          this.postComment()
+          this.router.navigate(['/', 'labeling'])
         })
-      } catch (e) {
-        console.log("error1")
-        this.labelService.assignArticle().subscribe()
-        this.postComment()
-        throw e
       }
-    } catch (e) {
-      console.log("error2")
-      // this.labelService.assignArticle().then()
-      // this.postComment()
-    }
+    })
   }
 
   nextTarget(obj) {
@@ -90,6 +87,7 @@ export class LabelingComponent implements OnInit {
       // this['stack'].push(object)
       console.log(this['stack'])
       console.log(object)
+      this['success'] = true
       this['object'] = object
       this['id'] = object['id']
       this['title'] = object['title']
@@ -109,6 +107,8 @@ export class LabelingComponent implements OnInit {
         
         this['comment'] = object['comments'][0]['comment']
       })
+    }, error => {
+      console.log(error)
     })
   }
 
@@ -121,6 +121,7 @@ export class LabelingComponent implements OnInit {
       this.nextTarget(this['object'])
     }
     if (this['targetCount'] == this['object']['targets'].length) {
+      this['success'] = false
       this.nextComment()
       this['targetCount'] = 0
       this.nextTarget(this['object'])
@@ -132,19 +133,42 @@ export class LabelingComponent implements OnInit {
 
   ngOnInit() {
     this['username'] = window.localStorage.getItem('username');
-    try {
-      try {
-        this.postComment()
-      } 
-      catch (e) {
-        console.log(e)
-        this.labelService.assignArticle().subscribe()
-        this.postComment()
-        throw e
+    this['success'] = false
+    this.labelService.getComment().subscribe((object: Article) => {
+      // this['stack'].push(object)
+      console.log(this['stack'])
+      console.log(object)
+      this['success'] = true
+      this['object'] = object
+      this['id'] = object['id']
+      this['title'] = object['title']
+      this['url'] = object['url']
+
+      this['targetCount'] = 0
+      this['target'] = object['targets'][this['targetCount']]
+
+      this.labelService.getMyLabels().subscribe((labels: Label[]) => {
+        this['count'] = labels.length
+        this['labeledData'] = labels
+        if (this['count'] < object['targets'].length) {
+          this['commentAddress'] = object['comments'][0]['address']
+        } else {
+          this['commentAddress'] = object['comments'][0]['address']
+        }
+        
+        this['comment'] = object['comments'][0]['comment']
+      })
+    }, error => {
+      console.log(error)
+    }, () => {
+      if (this['success'] == true) {
+        console.log("success")
+      } else {
+        this.labelService.assignArticle().subscribe(() => {
+          this.postComment()
+          this.router.navigate(['/', 'labeling'])
+        })
       }
-    } 
-    catch (e) {
-      console.log(e)
-    }
+    })
   }
 }
