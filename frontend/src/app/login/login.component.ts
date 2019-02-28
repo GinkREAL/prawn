@@ -38,6 +38,7 @@ export class LoginComponent implements OnInit {
           this.router.navigate(['/', 'labeling'])
         })
     }, error => {
+      console.log("Err")
       this['status'] = false
     })
   }
