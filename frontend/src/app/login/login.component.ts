@@ -17,9 +17,12 @@ class SessionResponse {
 })
 export class LoginComponent implements OnInit {
 
+  public status: boolean;
+  public credentials: any;
+
 	login: Login = {
   	id: 1,
-    name: 'login'
+    name: 'login',
   }
 
   constructor(private authService: AuthService, private router: Router) {

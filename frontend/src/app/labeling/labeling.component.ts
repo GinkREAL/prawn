@@ -20,6 +20,15 @@ import { catchError, retry, map } from 'rxjs/operators';
 })
 export class LabelingComponent implements OnInit {
 
+  public username: String;
+  public title: String;
+  public url: String;
+  public targetCount: number;
+  public target: String;
+  public comment: Comment;
+  public count: number;
+
+
 	labeling: Labeling = {
   	id: 2,
     name: 'labeling'
