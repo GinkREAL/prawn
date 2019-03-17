@@ -88,3 +88,19 @@ Label REST API:
 	Returns:
 		> 201 CREATED if label successful
 		> 404 NOT FOUND if comment cannot be found
+
+AI REST API:
+
+	[GET] /ai/article: Gets the AI data of a particular article
+	Paramters:
+		> article: reddit article id
+	Returns:
+		> 200 ok and desired result if found, else
+		> 404 NOT FOUND
+	
+	[POST] /ai/article: Requests a particular article to be evaluated by the system
+	Parameters:
+		> article: reddit article id
+	Returns:
+		> 200 ok
+		> 400 BAD REQUEST if already in job queue, or request has been too recent.
