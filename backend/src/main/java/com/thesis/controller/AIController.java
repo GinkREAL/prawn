@@ -22,9 +22,14 @@ public class AIController {
 
     @RequestMapping(value="/ai/article", method = RequestMethod.POST)
     public HttpStatus postJob(String article) {
-        JobOrder jb = new JobOrder(article);
-        jobOrderRepository.save(jb);
-        return HttpStatus.OK;
+        JobOrder jb = jobOrderRepository.findByArticle(article);
+        if(jb == null){
+            jb = new JobOrder(article);
+            jobOrderRepository.save(jb);
+            return HttpStatus.OK;
+        } else {
+            return HttpStatus.BAD_REQUEST;
+        }
     }
 
     @RequestMapping(value="/ai/article", method=RequestMethod.GET)
