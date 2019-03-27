@@ -18,22 +18,21 @@
   ],
 
   "permissions": [
-    "activeTab",
-    "tabs"
+    "activeTab"
   ],
 
   "browser_action": {
     "default_icon": "icons/shrimp-64.png",
     "default_title": "PRAWn",
     "default_popup": "popup/prawn.html"
-  },
-
-  "background": {
-    "scripts": [
-      "prawn.js",
-      "dataviz.js",
-      "Chart.min.js"
-    ]
   }
+
+  // "background": {
+  //   "scripts": [
+  //     "prawn.js",
+  //     "dataviz.js",
+  //     "Chart.min.js"
+  //   ]
+  // }
 
 }

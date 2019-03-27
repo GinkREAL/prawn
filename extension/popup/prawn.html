@@ -7,41 +7,33 @@
     <link rel="stylesheet" href="prawn.css"/>
   </head>
   <body>
-    <div id="loader"></div>
     <div class="container">
-        <h3 id="header">PRAWn: Reddit Comments Stance Detection</h3>
-        <div class="row">
-          <div id="main">Lorem ipsum dolor..</div>
-        </div>
-        <div class="row">
-          <div id="debug">URL DEBUG here</div>
-        </div>
-        <div class="row">
-          <div id="title"></div>
-        </div>
+      <h5 class="header">PRAWn: Comment Stance Visualizer</h3>
+      <h6 class="header" id="header_title"></h5>
     </div>
-
-    <div class="container">
-      <div class="row">
-        <button type="button" class="btn btn-dark">Request</button>
-      </div>
+    
+    <div class="container" id="show-button">
+      <button type="button" class="btn btn-dark" id="request_bt">Request</button>
+      <p>for the visualization</p>
     </div>
    
-    <div class="container">
+   <!-- Data viz -->
+    <div class="container" id="show-viz">
       <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
         <li class="nav-item">
-          <a class="nav-link active" id="pills-freq-tab" data-toggle="pill" href="#pills-freq" role="tab" aria-controls="pills-freq">Frequency</a>
+          <a class="nav-link active" id="pills-freq-tab" data-toggle="pill" href="#pills-freq" role="tab" aria-controls="pills-freq" aria-selected="false">Frequency</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="pills-count-tab" data-toggle="pill" href="#pills-count" role="tab" aria-controls="pills-count">Count</a>
+          <a class="nav-link" id="pills-count-tab" data-toggle="pill" href="#pills-count" role="tab" aria-controls="pills-count" aria-selected="false">Count</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="pills-binary-tab" data-toggle="pill" href="#pills-binary" role="tab" aria-controls="pills-binary">Binary</a>
+          <a class="nav-link" id="pills-binary-tab" data-toggle="pill" href="#pills-binary" role="tab" aria-controls="pills-binary" aria-selected="false">Binary</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" id="pills-tfidf-tab" data-toggle="pill" href="#pills-tfidf" role="tab" aria-controls="pills-tfidf">TFIDF</a>
+          <a class="nav-link" id="pills-tfidf-tab" data-toggle="pill" href="#pills-tfidf" role="tab" aria-controls="pills-tfidf" aria-selected="false">TFIDF</a>
         </li>
       </ul>
+      <!-- Tab panes -->
       <div class="tab-content" id="pills-tabContent">
         <div class="tab-pane fade show active" id="pills-freq" role="tabpanel" aria-labelledby="pills-freq-tab">
           <canvas id="freq"></canvas>
@@ -52,28 +44,17 @@
         <div class="tab-pane fade" id="pills-binary" role="tabpanel" aria-labelledby="pills-binary-tab">
           <canvas id="count"></canvas>
         </div>
-        <div class="tab-pane fade" id="pills-tfidf" role="tabpanel" aria-labelledby="pills-tfidf-tab">
-          <canvas id="tfidf"></canvas>
+        <div class="tab-pane fade" id="pills-tfidf" role="tabpanel" aria-labelledby="pills-tfidf-tab"><canvas id="tfidf"></canvas>
+          
         </div>
       </div>
     </div>
 
-    <!-- <div class="row">
-      <div class="col-sm-6">
-        <canvas id="freq"></canvas>
-        <canvas id="binary"></canvas>
-      </div>
-      <div class="col-sm-6">
-        <canvas id="count"></canvas>
-        <canvas id="tfidf"></canvas>
-      </div>
-    </div> -->
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="jquery.min.js"></script>
     <script type="text/javascript" src="bootstrap.min.js"></script>
     <!-- <script type="text/javascript" src="popper.min.js"></script> -->
     <script type="text/javascript" src="Chart.min.js"></script>
     <script type="text/javascript" src="prawn.js"></script>
     <script type="text/javascript" src="dataviz.js"></script>
-    <script type="text/javascript" src="../prawnz.js"></script>
   </body>
 </html>
