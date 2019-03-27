@@ -3,7 +3,10 @@ loaded = 0;
 
 if(window.localStorage.getItem('url') != null) {
     spliturl = window.localStorage.getItem('url').split("/")
+    titleArr = document.getElementsByClassName('s1okktje-0 eYgaub')
+    title = titleArr[0]
     document.getElementById('main').innerHTML = spliturl[6]
+    document.getElementById('title').innerHTML = titleArr.length
     document.getElementById('debug').innerHTML = window.localStorage.getItem('url')
 }
 

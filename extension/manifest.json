@@ -4,11 +4,18 @@
   "name": "PRAWn",
   "version": "1.0",
 
-  "description": "Detects the stance of commenters towards objects in reddit articles",
+  "description": "Detects the stance of commenters towards objects in Reddit articles",
 
   "icons": {
     "64": "icons/shrimp-64.png"
   },
+
+  "content_scripts": [
+    {
+      "matches": ["https://www.reddit.com/r/*"],
+      "js": ["prawnz.js"]
+    }
+  ],
 
   "permissions": [
     "activeTab",
@@ -22,7 +29,11 @@
   },
 
   "background": {
-    "scripts": ["prawn.js"]
+    "scripts": [
+      "prawn.js",
+      "dataviz.js",
+      "Chart.min.js"
+    ]
   }
 
 }

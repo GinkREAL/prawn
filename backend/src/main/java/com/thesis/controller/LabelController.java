@@ -48,7 +48,10 @@ public class LabelController { //controls both comments and labels, actually
         User user = userRepository.findByUsername(username);
 
         String[] checkpoint = user.getCheckpoint().split(",");
-        String articleid = user.getAssignedArticles().get(Integer.parseInt(checkpoint[0]));
+        int tmp = Integer.parseInt(checkpoint[0]);
+        if(tmp >= user.getAssignedArticles().size())
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        String articleid = user.getAssignedArticles().get(tmp);
         Heatmap hm = heatmapRepository.findByArticle(articleid);
         Optional<Article> article = articleRepository.findById(articleid);
         if(hm == null || !article.isPresent()) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
