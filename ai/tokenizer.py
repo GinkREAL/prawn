@@ -1,16 +1,13 @@
 import nltk
-import pymongo
-import bson
-import pprint
 from bson import ObjectId
-from numpy import array
 from string import punctuation
-from os import listdir
 from collections import Counter
 from nltk.corpus import stopwords
 from pymongo import MongoClient
+from nltk.stem import *
 
 nltk.download('stopwords')
+nltk.download('wordnet')
 
 try:
     client = MongoClient('mongodb://localhost:27017/')
@@ -32,6 +29,11 @@ def scrape_replies(comment_address, comments):
     else:
         return scrape_replies(comment_address, reply['replies'])
 
+# lemmatize text
+def lemma(text):
+
+    return SnowballStemmer("english").stem(WordNetLemmatizer().lemmatize(text, pos='v'))
+
 # cleans text, then transforms it into tokens
 def clean(doc):
     tokens = doc.split()
@@ -40,8 +42,9 @@ def clean(doc):
     tokens = [w for w in tokens if w.isalpha()]
     stop_words = set(stopwords.words('english'))
     tokens = [w for w in tokens if not w in stop_words]
-    tokens = [w for w in tokens if len(w) > 2]
+    tokens = [w for w in tokens if len(w) > 3]
     tokens = [w.lower() for w in tokens]
+    tokens = [lemma(w) for w in tokens]
     return tokens
 
 # adds to vocabulary
@@ -55,17 +58,17 @@ def newVocab():
     # Goes through the heatmap to find relevant comments, then goes to the article
     for heat in hmap.find():
         article_id = heat['article']
-        for article in articles.find({"_id": ObjectId(article_id)}):
-            comments = article['comments']
-            for cmap in heat['heatmap']:
-                if(cmap['score'] > 100):
-                    comment_address = cmap['comment_address']
-                    com_add = comment_address.split(",")
-                    addToVocab(scrape_replies(com_add,comments), counter)
+        article = articles.find_one({"_id": ObjectId(article_id)})
+        comments = article['comments']
+        for cmap in heat['heatmap']:
+            if(cmap['score'] > 100):
+                comment_address = cmap['comment_address']
+                com_add = comment_address.split(",")
+                addToVocab(scrape_replies(com_add,comments), counter)
 
     # keep tokens with a min occurrence
-    min_occurane = 2
-    tokens = [k for k,c in counter.items() if c >= min_occurane]
+    min_occur = 15
+    tokens = [k for k,c in counter.items() if c >= min_occur]
 
     # updates the vocabulary collection in MongoDB
     vocab.update_many({'vocabulary':{"$exists":True}}, {"$set": {'vocabulary': tokens}})
