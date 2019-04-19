@@ -1,10 +1,9 @@
 import nltk
 from bson import ObjectId
 from string import punctuation
-from collections import Counter
 from nltk.corpus import stopwords
 from pymongo import MongoClient
-from nltk.stem import *
+from nltk import *
 
 nltk.download('stopwords')
 nltk.download('wordnet')
