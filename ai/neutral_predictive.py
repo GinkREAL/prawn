@@ -74,7 +74,7 @@ def predict_sentiment(comment):
     topic = ''.join(topic)
     tokens = clean(comment)
     tokens = [w for w in tokens if w in vocab]
-    line = ' '.join(tokens)
+    line = ' '.join(str(x) for x in tokens)
     encoded = neu_tok.texts_to_matrix([line], mode='tfidf')
     yhat = neu_mod.predict(encoded, verbose=0)
     if round(yhat[0,0]) == 0:
