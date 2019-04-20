@@ -68,6 +68,7 @@ def clean(doc):
     return tokens
 
 # Predicts if text is Favor, Against, or Neutral
+# Returns string "Topic: 'topic' \n Stance: 'stance'"
 def predict_sentiment(comment):
     doc=nlp(comment)
     topic = [tok.text for tok in doc if (tok.dep_ == "nsubj")]
@@ -89,5 +90,5 @@ def predict_sentiment(comment):
 
 text = 'He was the top pick for this job'
 print(predict_sentiment(text))
-text = 'Donald Trump is a very bad president of all time'
+text = 'Donald Trump is a very bad president'
 print(predict_sentiment(text))
