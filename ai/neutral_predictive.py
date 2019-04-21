@@ -72,10 +72,10 @@ def clean(doc):
 def predict_sentiment(comment):
     doc=nlp(comment)
     topic = [tok.text for tok in doc if (tok.dep_ == "nsubj")]
-    topic = ''.join(topic)
+    topic = ' '.join(topic)
     tokens = clean(comment)
     tokens = [w for w in tokens if w in vocab]
-    line = ' '.join(str(x) for x in tokens)
+    line = ' '.join(tokens)
     encoded = neu_tok.texts_to_matrix([line], mode='tfidf')
     yhat = neu_mod.predict(encoded, verbose=0)
     if round(yhat[0,0]) == 0:
