@@ -76,7 +76,7 @@ def predict_sentiment(comment):
     tokens = clean(comment)
     tokens = [w for w in tokens if w in vocab]
     line = ' '.join(tokens)
-    encoded = neu_tok.texts_to_matrix([line], mode='tfidf')
+    encoded = neu_tok.texts_to_matrix([line], mode='freq')
     yhat = neu_mod.predict(encoded, verbose=0)
     if round(yhat[0,0]) == 0:
         return 'Topic:' + topic + '\n  Stance: Neutral'
@@ -87,8 +87,3 @@ def predict_sentiment(comment):
             return 'Topic:' + topic + '\n  Stance: Negative'
         else:
             return 'Topic:' + topic + '\n  Stance: Positive'
-
-text = 'He was the top pick for this job'
-print(predict_sentiment(text))
-text = 'Donald Trump is a very bad president'
-print(predict_sentiment(text))
