@@ -93,9 +93,10 @@ AI REST API:
 
 	[GET] /ai/article: Gets the AI data of a particular article
 	Paramters:
-		> article: reddit article id
+		> article: reddit article id 
 	Returns:
 		> 200 ok and desired result if found, else
+		> 208 ALREADY REPORTED if already in job queue
 		> 404 NOT FOUND
 	
 	[POST] /ai/article: Requests a particular article to be evaluated by the system
@@ -103,4 +104,4 @@ AI REST API:
 		> article: reddit article id
 	Returns:
 		> 200 ok
-		> 400 BAD REQUEST if already in job queue, or request has been too recent.
+		> 400 BAD REQUEST if already in job queue.

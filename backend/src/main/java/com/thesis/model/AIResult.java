@@ -2,6 +2,7 @@ package com.thesis.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import java.util.Date;
 
 @Document(value="results")
 public class AIResult{
@@ -9,6 +10,9 @@ public class AIResult{
     private String id;
     private String target;
     private String article; //article refers to reddit ID
+    private Date dateCreated;
+    private int commentsProcessed;
+    private int commentsTotal;
     private int commentsFavoring;
     private int commentsNeutral;
     private int commentsAgainst;
@@ -27,6 +31,10 @@ public class AIResult{
 
     public String getArticleId(){
         return article;
+    }
+
+    public Date getDate(){
+        return dateCreated;
     }
 
     public int getCommentsFavoring(){

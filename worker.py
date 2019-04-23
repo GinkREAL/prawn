@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 import praw
+from praw.models import MoreComments
 import datetime
 import time
 
@@ -16,10 +17,40 @@ def process(article):
     print("Received job: " + article)
     post = reddit.submission(id=article)
     print(post.title)
+    print(post.num_comments)
+
+    comments = post.comments
+    print("Replacing forest")
+    comments.replace_more(limit=8)
+
+    print("Turning it into list")
+    comments = comments.list()
+    print(len(comments))
+    commentnum = 0
+    score = 0
+    for comment in comments:
+        if type(comment) == MoreComments:
+            print("MoreComment deteced")
+        commentnum += 1
+        # process comment here
+
+    result = {
+        'target': "dummytarget",
+        'article': article,
+        'dateCreated': datetime.datetime.utcnow(),
+        'commentsProcessed': commentnum,
+        'commentsTotal': post.num_comments,
+        'commentsFavoring': commentnum - 100,
+        'commentsNeutral': 0,
+        'commentsAgainst': 100
+    }
+
+    db.results.insert_one(result)
+    print("Done")
 
 
 # main code
-while(True):
+while(True):  # not optimal but whatever
     if(db.jobs.count_documents({}) == 0):
         time.sleep(2)
         continue
