@@ -36,7 +36,12 @@ public class AIController {
     public ResponseEntity<?> getResult(String article){
         AIResult ai = aiResultRepository.findByArticle(article);
         if(ai == null){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            JobOrder jb = jobOrderRepository.findByArticle(article);
+            if(jb == null){
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            } else {
+                return new ResponseEntity<>(HttpStatus.ALREADY_REPORTED);
+            }
         } else {
             return new ResponseEntity<>(ai, HttpStatus.OK);
         }
