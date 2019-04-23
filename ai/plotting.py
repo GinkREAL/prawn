@@ -81,15 +81,12 @@ def eval(Xtrain, ytrain, Xtest, ytest):
     n_repeats = 5
     n_words = Xtest.shape[1]
     for i in range(n_repeats):
-        # define network
         model = Sequential()
         model.add(Dense(50, input_shape=(n_words,), activation='relu'))
         model.add(Dense(1, activation='sigmoid'))
-        # compile network
+        # model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
         model.compile(loss='binary_crossentropy', optimizer='adam', metrics=[f1])
-        # fit network
         model.fit(Xtrain, ytrain, epochs=20, verbose=2)
-        # evaluate
         loss, acc = model.evaluate(Xtest, ytest, verbose=0)
         scores.append(acc)
         print('%d f1 score: %s' % ((i+1), acc))
@@ -110,6 +107,7 @@ modes = ['binary', 'count', 'tfidf', 'freq']
 results = DataFrame()
 print('Training/Testing NEU_MOD')
 for mode in modes:
+    print(mode)
     Xtrain, Xtest = prep(neu_tr, neu_ts, mode)
     results[mode] = eval(Xtrain, ytrain, Xtest, ytest)
 
