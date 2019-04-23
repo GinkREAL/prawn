@@ -18,7 +18,8 @@
   ],
 
   "permissions": [
-    "activeTab"
+    "activeTab",
+    "*://localhost/*"
   ],
 
   "browser_action": {
@@ -26,13 +27,5 @@
     "default_title": "PRAWn",
     "default_popup": "popup/prawn.html"
   }
-
-  // "background": {
-  //   "scripts": [
-  //     "prawn.js",
-  //     "dataviz.js",
-  //     "Chart.min.js"
-  //   ]
-  // }
 
 }

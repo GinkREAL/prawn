@@ -8,6 +8,7 @@ import com.thesis.model.AIResultRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +21,7 @@ public class AIController {
     @Autowired
     private AIResultRepository aiResultRepository;
 
+    @CrossOrigin(origins = "*")
     @RequestMapping(value="/ai/article", method = RequestMethod.POST)
     public HttpStatus postJob(String article) {
         JobOrder jb = jobOrderRepository.findByArticle(article);
@@ -32,6 +34,7 @@ public class AIController {
         }
     }
 
+    @CrossOrigin(origins = "*")
     @RequestMapping(value="/ai/article", method=RequestMethod.GET)
     public ResponseEntity<?> getResult(String article){
         AIResult ai = aiResultRepository.findByArticle(article);
