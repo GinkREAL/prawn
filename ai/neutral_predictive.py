@@ -9,12 +9,6 @@ from nltk.corpus import stopwords
 from keras.models import load_model
 from keras.preprocessing.text import Tokenizer
 
-# These two are the bag of word models
-# One for check if neutral or with stance
-# Another for check if positive or negative
-pn_mod = load_model("posneg.h5")
-neu_mod = load_model("neutral.h5")
-
 # This is to load Spacy library on English lang
 # To get the subject/topic of the sentence
 nlp = en_core_web_sm.load()
@@ -35,24 +29,29 @@ fav_tr = []
 agt_tr = []
 non_tr = []
 
-for data in ds.find():
-    lbl = data['label']
+for sets in ds.find():
+    lbl = sets['label']
     if lbl == 'fav_tr':
-        fav_tr = data['voc']
-    elif lbl == 'non_tr':
-        non_tr = data['voc']
+        fav_tr = sets['voc']
     elif lbl == 'agt_tr':
-        agt_tr = data['voc']
+        agt_tr = sets['voc']
+    elif lbl == 'non_tr':
+        non_tr = sets['voc']
 
 tr_set = agt_tr + fav_tr
 neu_tr = non_tr + tr_set
 
 # Tokenizers for both models that fits their specific data set/vocabulary
 neu_tok = Tokenizer()
-neu_tok.fit_on_texts(neu_tr)
-
+neu_tok.fit_on_texts(neu_tr)#
 pn_tok = Tokenizer()
 pn_tok.fit_on_texts(tr_set)
+
+# These two are the bag of word models
+# One for check if neutral or with stance
+# Another for check if positive or negative
+pn_mod = load_model("posneg.h5")
+neu_mod = load_model("neutral.h5")
 
 # Cleans text to tokens
 def clean(doc):
@@ -70,7 +69,7 @@ def clean(doc):
 # Predicts if text is Favor, Against, or Neutral
 # Returns string "Topic: 'topic' \n Stance: 'stance'"
 def predict_sentiment(comment):
-    doc=nlp(comment)
+    doc = nlp(comment)
     topic = [tok.text for tok in doc if (tok.dep_ == "nsubj")]
     topic = ' '.join(topic)
     tokens = clean(comment)
@@ -87,3 +86,6 @@ def predict_sentiment(comment):
             return 'Topic:' + topic + '\n  Stance: Negative'
         else:
             return 'Topic:' + topic + '\n  Stance: Positive'
+
+text = 'insert commment here'
+print(predict_sentiment(text))
