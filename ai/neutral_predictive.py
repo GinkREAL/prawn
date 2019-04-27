@@ -105,7 +105,12 @@ def predict_all(topic, comments):
                     against += 1
                 elif stance == 'none':
                     none += 1
-                out[topic] = {"favor": favor, "against": against, "none": none}
+
+    favor = favor / len(comments)
+    against = against / len(comments)
+    none = none / len(comments)
+    out[topic] = {"favor": favor, "against": against, "none": none}
+
     return out
 
 
