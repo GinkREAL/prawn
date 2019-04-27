@@ -20,6 +20,7 @@ except:
     print("Failed to connect")
 
 db = client.reddit
+articles = db['articles']
 voc = db['vocab']
 voca =  voc.find_one({'vocabulary':{"$exists":True}})
 vocab = voca['vocabulary']
@@ -77,15 +78,35 @@ def predict_sentiment(comment):
     line = ' '.join(tokens)
     encoded = neu_tok.texts_to_matrix([line], mode='freq')
     yhat = neu_mod.predict(encoded, verbose=0)
-    if round(yhat[0,0]) == 0:
+    if yhat[0,0] == 0:
         return 'Topic:' + topic + '\n  Stance: Neutral'
     else:
         encoded = pn_tok.texts_to_matrix([line], mode='tfidf')
         yhat = pn_mod.predict(encoded, verbose=0)
-        if round(yhat[0,0]) == 0:
+        if yhat[0,0] == 0:
             return 'Topic:' + topic + '\n  Stance: Negative'
         else:
             return 'Topic:' + topic + '\n  Stance: Positive'
 
-text = 'insert commment here'
-print(predict_sentiment(text))
+def predict_all(topic, comments):
+    out = {}
+    favor = 0
+    against = 0
+    none = 0
+    for comment in comments:
+        comment_topics = nlp(comment)
+        comment_topics = [tok.text for tok in comment_topics if tok.dep_ == "nsubj"]
+        for comment_topic in comment_topics:
+            if topic == comment_topic:
+                stance = predict_sentiment(comment)
+                if stance == 'favor':
+                    favor += 1
+                elif stance == 'against':
+                    against += 1
+                elif stance == 'none':
+                    none += 1
+                out[topic] = {"favor": favor, "against": against, "none": none}
+    return out
+
+
+
