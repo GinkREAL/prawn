@@ -78,12 +78,12 @@ def predict_sentiment(comment):
     line = ' '.join(tokens)
     encoded = neu_tok.texts_to_matrix([line], mode='freq')
     yhat = neu_mod.predict(encoded, verbose=0)
-    if yhat[0,0] == 0:
+    if yhat[0,0] < 0.4:
         return 'Topic:' + topic + '\n  Stance: Neutral'
     else:
         encoded = pn_tok.texts_to_matrix([line], mode='tfidf')
         yhat = pn_mod.predict(encoded, verbose=0)
-        if yhat[0,0] == 0:
+        if yhat[0,0] < 0.4:
             return 'Topic:' + topic + '\n  Stance: Negative'
         else:
             return 'Topic:' + topic + '\n  Stance: Positive'
