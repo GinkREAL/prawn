@@ -20,7 +20,6 @@ except:
     print("Failed to connect")
 
 db = client.reddit
-articles = db['articles']
 voc = db['vocab']
 voca =  voc.find_one({'vocabulary':{"$exists":True}})
 vocab = voca['vocabulary']
@@ -93,7 +92,9 @@ def predict_all(topic, comments):
     favor = 0
     against = 0
     none = 0
-    for comment in comments:
+    
+    for temp_comment in comments:
+        comment = temp_comment['comment']
         comment_topics = nlp(comment)
         comment_topics = [tok.text for tok in comment_topics if tok.dep_ == "nsubj"]
         for comment_topic in comment_topics:
@@ -105,10 +106,7 @@ def predict_all(topic, comments):
                     against += 1
                 elif stance == 'none':
                     none += 1
-
-    favor = favor / len(comments)
-    against = against / len(comments)
-    none = none / len(comments)
+                    
     out[topic] = {"favor": favor, "against": against, "none": none}
 
     return out
