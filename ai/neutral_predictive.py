@@ -8,7 +8,9 @@ from pymongo import MongoClient
 from nltk.corpus import stopwords
 from keras.models import load_model
 from keras.preprocessing.text import Tokenizer
+from rake_nltk import Rake
 
+r = Rake()
 # This is to load Spacy library on English lang
 # To get the subject/topic of the sentence
 nlp = en_core_web_sm.load()
@@ -23,7 +25,7 @@ db = client.reddit
 voc = db['vocab']
 voca = voc.find_one({'vocabulary': {"$exists": True}})
 vocab = voca['vocabulary']
-ds = db['dataset']
+ds = db['2dataset']
 
 fav_tr = []
 agt_tr = []
@@ -54,8 +56,6 @@ pn_mod = load_model("posneg.h5")
 neu_mod = load_model("neutral.h5")
 
 # Cleans text to tokens
-
-
 def clean(doc):
     tokens = doc.split()
     table = str.maketrans('', '', punctuation)
@@ -71,9 +71,8 @@ def clean(doc):
 
 # Predicts if text is Favor, Against, or Neutral
 # Returns string "Topic: 'topic' \n Stance: 'stance'"
-
-
 def predict_sentiment(comment):
+    comment = comment.lower()
     doc = nlp(comment)
     topic = [tok.text for tok in doc if (tok.dep_ == "nsubj")]
     topic = ' '.join(topic)
@@ -83,37 +82,50 @@ def predict_sentiment(comment):
     encoded = neu_tok.texts_to_matrix([line], mode='freq')
     yhat = neu_mod.predict(encoded, verbose=0)
     if yhat[0, 0] < 0.4:
-        return {"topic": topic, "stance": "Neutral"}
+        return "none"
     else:
         encoded = pn_tok.texts_to_matrix([line], mode='tfidf')
         yhat = pn_mod.predict(encoded, verbose=0)
         if yhat[0, 0] < 0.4:
-            return {"topic": topic, "stance": "Negative"}
+            return "against"
         else:
-            return {"topic": topic,  "stance": "Positive"}
+            return "favor"
 
-
-def predict_all(topic, comments):
+def predict_all(title, comments):
     out = {}
     favor = 0
     against = 0
     none = 0
+    count = 0;
+
+    r.extract_keywords_from_text(title)
+    topics = r.get_ranked_phrases()
 
     for temp_comment in comments:
         comment = temp_comment.body
-        comment_topics = nlp(comment)
-        comment_topics = [
-            tok.text for tok in comment_topics if tok.dep_ == "nsubj"]
+        r.extract_keywords_from_text(comment)
+        comment_topics = r.get_ranked_phrases()
         for comment_topic in comment_topics:
-            if topic == comment_topic:
-                stance = predict_sentiment(comment)
-                if stance == 'favor':
-                    favor += 1
-                elif stance == 'against':
-                    against += 1
-                elif stance == 'none':
-                    none += 1
+            for topic in topics:
+                if topic == comment_topic:
+                    stance = predict_sentiment(comment)
+                    count += 1
+                    if comment in comments:
+                        comments.remove(comment)
+                    if stance == 'favor':
+                        favor += 1
+                    elif stance == 'against':
+                        against += 1
+                    elif stance == 'none':
+                        none += 1
 
-    out[topic] = {"favor": favor, "against": against, "none": none}
+    favor = (favor / count) * 100
+    favor =  float("{0:.2f}".format(favor))
+    against = (against / count) * 100
+    against =  float("{0:.2f}".format(against))
+    none = (none / count) * 100
+    none =  float("{0:.2f}".format(none))
+
+    out[topics[0]] = {"favor": favor, "against": against, "none": none}
 
     return out
