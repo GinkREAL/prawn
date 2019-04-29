@@ -3,6 +3,7 @@ import praw
 from praw.models import MoreComments
 import datetime
 import time
+from neutral_predictive import predict_sentiment
 
 # Worker thread for the AI.
 
@@ -48,6 +49,19 @@ def process(article):
     db.results.insert_one(result)
     print("Done")
 
+
+temp = predict_sentiment("This is the happiest and most positive statement possible")
+print(temp['stance'])
+print(temp['topic'])
+temp = predict_sentiment("happy")
+print(temp['stance'])
+print(temp['topic'])
+temp = predict_sentiment("postiive")
+print(temp['stance'])
+print(temp['topic'])
+temp = predict_sentiment("the best")
+print(temp['stance'])
+print(temp['topic'])
 
 # main code
 while(True):  # not optimal but whatever
