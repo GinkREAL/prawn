@@ -21,7 +21,7 @@ except:
 
 db = client.reddit
 voc = db['vocab']
-voca =  voc.find_one({'vocabulary':{"$exists":True}})
+voca = voc.find_one({'vocabulary': {"$exists": True}})
 vocab = voca['vocabulary']
 ds = db['dataset']
 
@@ -43,7 +43,7 @@ neu_tr = non_tr + tr_set
 
 # Tokenizers for both models that fits their specific data set/vocabulary
 neu_tok = Tokenizer()
-neu_tok.fit_on_texts(neu_tr)#
+neu_tok.fit_on_texts(neu_tr)
 pn_tok = Tokenizer()
 pn_tok.fit_on_texts(tr_set)
 
@@ -54,6 +54,8 @@ pn_mod = load_model("posneg.h5")
 neu_mod = load_model("neutral.h5")
 
 # Cleans text to tokens
+
+
 def clean(doc):
     tokens = doc.split()
     table = str.maketrans('', '', punctuation)
@@ -63,11 +65,14 @@ def clean(doc):
     tokens = [w for w in tokens if not w in stop_words]
     tokens = [w for w in tokens if len(w) > 3]
     tokens = [w.lower() for w in tokens]
-    tokens = [SnowballStemmer("english").stem(WordNetLemmatizer().lemmatize(w, pos='v')) for w in tokens]
+    tokens = [SnowballStemmer("english").stem(
+        WordNetLemmatizer().lemmatize(w, pos='v')) for w in tokens]
     return tokens
 
 # Predicts if text is Favor, Against, or Neutral
 # Returns string "Topic: 'topic' \n Stance: 'stance'"
+
+
 def predict_sentiment(comment):
     doc = nlp(comment)
     topic = [tok.text for tok in doc if (tok.dep_ == "nsubj")]
@@ -77,26 +82,28 @@ def predict_sentiment(comment):
     line = ' '.join(tokens)
     encoded = neu_tok.texts_to_matrix([line], mode='freq')
     yhat = neu_mod.predict(encoded, verbose=0)
-    if yhat[0,0] < 0.4:
-        return 'Topic:' + topic + '\n  Stance: Neutral'
+    if yhat[0, 0] < 0.4:
+        return {"topic": topic, "stance": "Neutral"}
     else:
         encoded = pn_tok.texts_to_matrix([line], mode='tfidf')
         yhat = pn_mod.predict(encoded, verbose=0)
-        if yhat[0,0] < 0.4:
-            return 'Topic:' + topic + '\n  Stance: Negative'
+        if yhat[0, 0] < 0.4:
+            return {"topic": topic, "stance": "Negative"}
         else:
-            return 'Topic:' + topic + '\n  Stance: Positive'
+            return {"topic": topic,  "stance": "Positive"}
+
 
 def predict_all(topic, comments):
     out = {}
     favor = 0
     against = 0
     none = 0
-    
+
     for temp_comment in comments:
-        comment = temp_comment['comment']
+        comment = temp_comment.body
         comment_topics = nlp(comment)
-        comment_topics = [tok.text for tok in comment_topics if tok.dep_ == "nsubj"]
+        comment_topics = [
+            tok.text for tok in comment_topics if tok.dep_ == "nsubj"]
         for comment_topic in comment_topics:
             if topic == comment_topic:
                 stance = predict_sentiment(comment)
@@ -106,10 +113,7 @@ def predict_all(topic, comments):
                     against += 1
                 elif stance == 'none':
                     none += 1
-                    
+
     out[topic] = {"favor": favor, "against": against, "none": none}
 
     return out
-
-
-

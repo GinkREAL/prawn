@@ -3,7 +3,7 @@ import praw
 from praw.models import MoreComments
 import datetime
 import time
-from neutral_predictive import predict_sentiment
+from neutral_predictive import predict_sentiment, predict_all
 
 # Worker thread for the AI.
 
@@ -22,19 +22,18 @@ def process(article):
 
     comments = post.comments
     print("Replacing forest")
-    comments.replace_more(limit=8)
+    comments.replace_more(limit=12)
 
     print("Turning it into list")
     comments = comments.list()
     print(len(comments))
     commentnum = 0
     score = 0
-    for comment in comments:
-        if type(comment) == MoreComments:
-            print("MoreComment deteced")
-        commentnum += 1
-        # process comment here
 
+    topic = predict_sentiment(post.title)
+    print("Topic: " + topic['topic'])
+    result = predict_all(topic['topic'], comments)
+    print(result)
     result = {
         'target': "dummytarget",
         'article': article,
@@ -48,20 +47,6 @@ def process(article):
 
     db.results.insert_one(result)
     print("Done")
-
-
-temp = predict_sentiment("This is the happiest and most positive statement possible")
-print(temp['stance'])
-print(temp['topic'])
-temp = predict_sentiment("happy")
-print(temp['stance'])
-print(temp['topic'])
-temp = predict_sentiment("postiive")
-print(temp['stance'])
-print(temp['topic'])
-temp = predict_sentiment("the best")
-print(temp['stance'])
-print(temp['topic'])
 
 # main code
 while(True):  # not optimal but whatever
