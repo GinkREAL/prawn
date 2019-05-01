@@ -3,7 +3,7 @@ import praw
 from praw.models import MoreComments
 import datetime
 import time
-from neutral_predictive import predict_sentiment, predict_all
+#from neutral_predictive import predict_sentiment, predict_all
 
 # Worker thread for the AI.
 
@@ -30,19 +30,17 @@ def process(article):
     commentnum = 0
     score = 0
 
-    topic = predict_sentiment(post.title)
-    print("Topic: " + topic['topic'])
-    result = predict_all(topic['topic'], comments)
-    print(result)
+    #result = predict_all(post.title, comments)
+    #print(result)
     result = {
         'target': "dummytarget",
         'article': article,
         'dateCreated': datetime.datetime.utcnow(),
         'commentsProcessed': commentnum,
         'commentsTotal': post.num_comments,
-        'commentsFavoring': commentnum - 100,
-        'commentsNeutral': 0,
-        'commentsAgainst': 100
+        'commentsFavoring': 400,
+        'commentsNeutral': 650,
+        'commentsAgainst': 300
     }
 
     db.results.insert_one(result)

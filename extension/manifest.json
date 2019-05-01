@@ -2,7 +2,7 @@
 
   "manifest_version": 2,
   "name": "PRAWn",
-  "version": "1.0",
+  "version": "1.2",
 
   "description": "Detects the stance of commenters towards objects in Reddit articles",
 
@@ -19,7 +19,8 @@
 
   "permissions": [
     "activeTab",
-    "*://localhost/*"
+    "*://localhost/*",
+    "*://prawn.ml/*"
   ],
 
   "browser_action": {

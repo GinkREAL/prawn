@@ -1,5 +1,5 @@
-baseURL = "http://localhost:8080/ai/article" //dev
-//baseURL = "https://prawn.ml/ai/article" //prod
+//baseURL = "http://localhost:8080/ai/article" //dev
+baseURL = "https://prawn.ml/ai/article" //prod
 
 var pageurl = document.URL.split("/")[6];
 
