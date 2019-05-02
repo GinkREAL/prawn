@@ -1,7 +1,7 @@
 # Needs "posneg.h5" and "neutral.h5" for model
 # Needs db.collection of 'vocab' and 'dataset'
 
-import en_core_web_sm
+#import en_core_web_sm
 from nltk.stem import *
 from string import punctuation
 from pymongo import MongoClient
@@ -13,7 +13,7 @@ from rake_nltk import Rake
 r = Rake()
 # This is to load Spacy library on English lang
 # To get the subject/topic of the sentence
-nlp = en_core_web_sm.load()
+#nlp = en_core_web_sm.load()
 
 # Connects and loads to the mongodb server
 try:
@@ -25,7 +25,7 @@ db = client.reddit
 voc = db['vocab']
 voca = voc.find_one({'vocabulary': {"$exists": True}})
 vocab = voca['vocabulary']
-ds = db['2dataset']
+ds = db['dataset']
 
 fav_tr = []
 agt_tr = []
@@ -73,9 +73,6 @@ def clean(doc):
 # Returns string "Topic: 'topic' \n Stance: 'stance'"
 def predict_sentiment(comment):
     comment = comment.lower()
-    doc = nlp(comment)
-    topic = [tok.text for tok in doc if (tok.dep_ == "nsubj")]
-    topic = ' '.join(topic)
     tokens = clean(comment)
     tokens = [w for w in tokens if w in vocab]
     line = ' '.join(tokens)
@@ -96,36 +93,35 @@ def predict_all(title, comments):
     favor = 0
     against = 0
     none = 0
-    count = 0;
 
     r.extract_keywords_from_text(title)
     topics = r.get_ranked_phrases()
+
+    for topic in topics: #populate
+        out[topic] = {"favor": 0, "against": 0, "none": 0}
 
     for temp_comment in comments:
         comment = temp_comment.body
         r.extract_keywords_from_text(comment)
         comment_topics = r.get_ranked_phrases()
-        for comment_topic in comment_topics:
-            for topic in topics:
+        for topic in topics:
+            matchFound = False
+            for comment_topic in comment_topics:
                 if topic == comment_topic:
+                    print(topic)
+                    matchFound = True
                     stance = predict_sentiment(comment)
-                    count += 1
-                    if comment in comments:
-                        comments.remove(comment)
+                    #if comment in comments:
+                     #   comments.remove(comment)
                     if stance == 'favor':
-                        favor += 1
+                        out[topic]["favor"] += 1
                     elif stance == 'against':
-                        against += 1
+                        out[topic]["against"] += 1
                     elif stance == 'none':
-                        none += 1
+                        out[topic]["none"] += 1
+            if(not matchFound):
+                out[topic]["none"] += 1
 
-    favor = (favor / count) * 100
-    favor =  float("{0:.2f}".format(favor))
-    against = (against / count) * 100
-    against =  float("{0:.2f}".format(against))
-    none = (none / count) * 100
-    none =  float("{0:.2f}".format(none))
-
-    out[topics[0]] = {"favor": favor, "against": against, "none": none}
+    print(out)
 
     return out

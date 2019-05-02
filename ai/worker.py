@@ -3,7 +3,7 @@ import praw
 from praw.models import MoreComments
 import datetime
 import time
-#from neutral_predictive import predict_sentiment, predict_all
+from neutral_predictive import predict_sentiment, predict_all
 
 # Worker thread for the AI.
 
@@ -21,22 +21,17 @@ def process(article):
     print(post.num_comments)
 
     comments = post.comments
-    print("Replacing forest")
     comments.replace_more(limit=12)
-
-    print("Turning it into list")
     comments = comments.list()
     print(len(comments))
-    commentnum = 0
-    score = 0
 
-    #result = predict_all(post.title, comments)
-    #print(result)
+    result = predict_all(post.title, comments)
+    print(result)
     result = {
         'target': "dummytarget",
         'article': article,
         'dateCreated': datetime.datetime.utcnow(),
-        'commentsProcessed': commentnum,
+        'commentsProcessed': 0,
         'commentsTotal': post.num_comments,
         'commentsFavoring': 400,
         'commentsNeutral': 650,
