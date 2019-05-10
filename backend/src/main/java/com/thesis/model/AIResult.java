@@ -3,19 +3,16 @@ package com.thesis.model;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.Date;
+import java.util.List;
 
 @Document(value="results")
 public class AIResult{
     @Id
     private String id;
-    private String target;
     private String article; //article refers to reddit ID
     private Date dateCreated;
-    private int commentsProcessed;
     private int commentsTotal;
-    private int commentsFavoring;
-    private int commentsNeutral;
-    private int commentsAgainst;
+    private List<TargetResult> results;
 
     protected AIResult(){
 
@@ -23,10 +20,6 @@ public class AIResult{
 
     public String getId(){
         return id;
-    }
-
-    public String getTarget(){
-        return target;
     }
 
     public String getArticleId(){
@@ -37,16 +30,8 @@ public class AIResult{
         return dateCreated;
     }
 
-    public int getCommentsFavoring(){
-        return commentsFavoring;
-    }
-
-    public int getCommentsNeutral(){
-        return commentsNeutral;
-    }
-
-    public int getCommentsAgainst(){
-        return commentsAgainst;
+    public List<TargetResult> getResults(){
+        return results;
     }
 
 }

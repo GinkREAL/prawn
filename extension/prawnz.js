@@ -5,33 +5,39 @@ var pageurl = document.URL.split("/")[6];
 
 const loadChart = (j) => {
     element = document.getElementsByClassName("RffBqG1xCvuy1r49wYhLr")[0] //regular
-    if(element == null) element = document.getElementsByClassName("s1gwtmx8-2")[0] //overlay
+    if(element == null) element = document.getElementsByClassName("s1gwtmx8-2")[0] //overlay, probably doesnt work anyway
     // div list
     //s1km3tr3-2 cqEWZA
     //s1gwtmx8-2
     //RffBqG1xCvuy1r49wYhLr s1gwtmx8-2 KpCIH
-    viz = '<div class="s17ivpdx-0 jAbabm" style="margin-bottom:20px"><div class="_ZhON3a3vplThB8NFwuJn"><div class="_2sggAEfRQLyoAl4J__5twU">Commenters\' Thoughts</div></div><canvas id="stackedBar"></canvas><div class="qcxaFzxDBtnkGs5hS18OZ" style="text-align:right; color:rgb(124, 124, 124); margin:10px;">Powered by PRAWn</div></div>'
+    viz = '<div class="' + element.children[0].attributes.class.textContent
+    viz += '" style="margin-bottom:20px"><div class="_ZhON3a3vplThB8NFwuJn"><div class="_2sggAEfRQLyoAl4J__5twU">Commenters\' Thoughts</div></div><canvas id="stackedBar"></canvas><div class="qcxaFzxDBtnkGs5hS18OZ" style="text-align:right; color:rgb(124, 124, 124); margin:10px;">Powered by PRAWn</div></div>'
     element.insertAdjacentHTML('afterbegin',viz);
 
     dataStacked = {
-        labels: ["Target"],
+        labels: [],
         datasets: [{
-            type: 'horizontalBar',
             label: 'In Favor',
-            data: [j.commentsFavoring],
+            data: [],
             backgroundColor: 'rgba(54, 162, 235, 1)'
         }, {
-            type: 'horizontalBar',
             label: 'Against',
-            data: [j.commentsAgainst],
+            data: [],
             backgroundColor: 'rgba(255, 99, 132, 1)'
         }, {
-            type: 'horizontalBar',
             label: 'None',
-            data: [j.commentsNeutral],
+            data: [],
             backgroundColor: 'rgba(255, 205, 86, 1)'
         }]
     };
+
+    console.log(j.results.length)
+    for (i = 0 ; i < j.results.length ; i++){
+        dataStacked.labels.push(j.results[i].target)
+        dataStacked.datasets[0].data.push(j.results[i].commentsFavoring)
+        dataStacked.datasets[1].data.push(j.results[i].commentsAgainst)
+        dataStacked.datasets[2].data.push(j.results[i].commentsNeutral)
+    }
 
     var ctx = document.getElementById('stackedBar').getContext('2d');
 
@@ -52,7 +58,6 @@ const loadChart = (j) => {
 }
 
 async function main() {
-    console.log("PRAWN Starting")
     var response = await fetch(baseURL + "?article=" + pageurl)
     .then((response) => {
         return response
@@ -75,8 +80,6 @@ async function main() {
         })
         .then((response) => {
             console.log("Request")
-            console.log(JSON.stringify(bd))
-            console.log(response)
         })
         .catch((error) => {
             console.log("Request error")

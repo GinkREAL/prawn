@@ -74,7 +74,7 @@ The extension is already precompiled, however should you want to build it, you n
 
 ```
 cd extension
-web-ext build
+web-ext build (Don't forget to comment the correct baseURL in prawnz.js for dev or prod)
 ```
 
 This outputs a zip file in web-ext artifacts, send it to mozilla for the extension to be signed. (Don't do that, signed version is already bundled)
@@ -86,10 +86,20 @@ The most questionable decision in this project, we have a separate script do the
 
 ```
 pip3 install nltk
+pip3 install spacy
 pip3 install pymongo
 pip3 install keras
 pip3 install tensorflow
 pip3 install rake_nltk
+pip3 install praw
+python3 -m spacy download en_core_web_md
+```
+
+Also in a python3 console
+
+```
+import nltk
+nltk.download('wordnet')
 ```
 
 #### DB Library Prerequisites

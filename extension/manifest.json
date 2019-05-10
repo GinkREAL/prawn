@@ -2,7 +2,7 @@
 
   "manifest_version": 2,
   "name": "PRAWn",
-  "version": "1.2",
+  "version": "1.3",
 
   "description": "Detects the stance of commenters towards objects in Reddit articles",
 

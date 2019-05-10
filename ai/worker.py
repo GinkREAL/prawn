@@ -25,20 +25,23 @@ def process(article):
     comments = comments.list()
     print(len(comments))
 
-    result = predict_all(post.title, comments)
-    print(result)
+    output = predict_all(post.title, comments)
     result = {
-        'target': "dummytarget",
-        'article': article,
+        'article' : article,
         'dateCreated': datetime.datetime.utcnow(),
-        'commentsProcessed': 0,
         'commentsTotal': post.num_comments,
-        'commentsFavoring': 400,
-        'commentsNeutral': 650,
-        'commentsAgainst': 300
+        'results' : []
     }
+    for topic in output.keys():
+        result['results'].append({
+            'target': topic,
+            'commentsFavoring': output[topic]['favor'],
+            'commentsNeutral': output[topic]['none'],
+            'commentsAgainst': output[topic]['against'] 
+        })
+    print(result)
 
-    db.results.insert_one(result)
+    db.results.replace_one({"article": article}, result, True)
     print("Done")
 
 # main code
