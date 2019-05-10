@@ -9,9 +9,9 @@ from pymongo import MongoClient
 from nltk.corpus import stopwords
 from keras.models import load_model
 from keras.preprocessing.text import Tokenizer
-from rake_nltk import Rake
+#from rake_nltk import Rake
 
-r = Rake()
+#r = Rake()
 # This is to load Spacy library on English lang
 # To get the subject/topic of the sentence
 nlp = en_core_web_md.load()

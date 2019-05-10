@@ -24,16 +24,13 @@ public class AIController {
     @CrossOrigin(origins = "*")
     @RequestMapping(value="/ai/article", method = RequestMethod.POST)
     public HttpStatus postJob(String article) {
-        System.out.println("posted job: " + article);
         if(article == null){
-            System.out.println("Bad request");
             return HttpStatus.BAD_REQUEST;
         }
         JobOrder jb = jobOrderRepository.findByArticle(article);
         if(jb == null){
             jb = new JobOrder(article);
             jobOrderRepository.save(jb);
-            System.out.println("Saved");
             return HttpStatus.OK;
         } else {
             return HttpStatus.BAD_REQUEST;
@@ -43,7 +40,6 @@ public class AIController {
     @CrossOrigin(origins = "*")
     @RequestMapping(value="/ai/article", method=RequestMethod.GET)
     public ResponseEntity<?> getResult(String article){
-        System.out.println("Get result");
         AIResult ai = aiResultRepository.findByArticle(article);
         if(ai == null){
             JobOrder jb = jobOrderRepository.findByArticle(article);
